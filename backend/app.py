@@ -14,8 +14,7 @@ CORS(app)
 
 CSV_FILE = 'menu_data.csv'
 # Get your key from weatherapi.com
-WEATHER_API_KEY = "da92ba39e070d8db6566c5f55b2ff087"
-
+WEATHER_API_KEY = os.environ.get("WEATHER_API_KEY") # This reads the key from Render settings
 # --- 1. DATA LOADER & SAVER ---
 def load_menu():
     base_path = os.path.dirname(os.path.abspath(__file__))
