@@ -1,0 +1,19 @@
+# Python (Backend)
+backend/venv/
+backend/__pycache__/
+backend/*.pyc
+backend/.env
+backend/instance/
+
+# Node (Frontend)
+frontend/node_modules/
+frontend/dist/
+frontend/.env.local
+frontend/.env.development.local
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+
+# Large Data or Logs
+*.log

@@ -1,0 +1,51 @@
+id,name,image_file,price,calories,type,category,mood_tag,weather_tag,age_group,description,rating
+1,Tomato Basil Soup,soup_tomato.jpg,150,120,veg,Soups,Sad,Rainy,All,Warm roasted tomato comfort.,4.0
+2,Sweet Corn Soup,soup_corn.jpg,140,150,veg,Soups,Neutral,Rainy,Child,Classic creamy corn soup.,4.0
+4,Hot & Sour Soup,soup_hot.jpg,160,160,veg,Soups,Angry,Cold,Adult,Spicy kick to clear sinuses.,4.0
+7,Nachos Supreme,nachos.jpg,280,450,veg,Appetizers,Happy,Sunny,Child,Loaded with cheese and salsa.,4.0
+8,Cheese Fondue,fondue.jpg,450,600,veg,Appetizers,Happy,Cold,All,Melted swiss cheese pot.,4.0
+9,Paneer Tikka,paneer_tikka.jpg,320,380,veg,Tandoori,Happy,All,All,Char-grilled spiced cottage cheese.,4.0
+11,Chicken Tikka,chick_tikka.jpg,380,420,non-veg,Tandoori,Happy,All,Adult,Classic red spiced chicken.,4.0
+12,Malai Kebab,malai_kebab.jpg,400,450,non-veg,Tandoori,Sad,All,Child,Creamy mild chicken melt.,4.0
+13,Veg Manchurian,manchurian.jpg,250,300,veg,Asian,Angry,Rainy,Adult,Spicy fried veg balls.,4.0
+14,Chilli Paneer,chilli_paneer.jpg,280,350,veg,Asian,Angry,All,Adult,Spicy cottage cheese toss.,4.0
+15,Chicken Lollipop,lollipop.jpg,320,400,non-veg,Asian,Happy,Sunny,Child,Fried chicken drums.,4.0
+18,Margherita Pizza,pizza_margherita.jpg,350,500,veg,Pizza,Happy,Sunny,Child,Classic cheese and basil.,4.0
+19,Peppy Paneer Pizza,pizza_paneer.jpg,420,600,veg,Pizza,Happy,All,Adult,Spicy paneer topping.,4.0
+20,BBQ Chicken Pizza,pizza_bbq.jpg,480,650,non-veg,Pizza,Happy,All,Adult,Smoky bbq chicken.,4.0
+22,Red Sauce Pasta,pasta_red.jpg,300,400,veg,Pizza,Angry,Sunny,Adult,Tangy tomato arrabbiata.,4.0
+23,Paneer Butter Masala,pbm.jpg,350,500,veg,Main Veg,Happy,All,All,Rich creamy tomato gravy.,4.0
+24,Dal Makhani,dal_makhani.jpg,280,450,veg,Main Veg,Sad,Rainy,Senior,Slow cooked black lentils.,4.0
+25,Palak Paneer,palak.jpg,320,380,veg,Main Veg,Neutral,All,Senior,Healthy spinach gravy.,4.0
+26,Aloo Gobi,aloo_gobi.jpg,240,300,veg,Main Veg,Neutral,Sunny,All,Home style cauliflower.,4.0
+27,Butter Chicken,butter_chick.jpg,450,600,non-veg,Main Non-Veg,Happy,All,All,The legendary classic.,4.0
+28,Kadai Chicken,kadai_chick.jpg,420,500,non-veg,Main Non-Veg,Angry,All,Adult,Spicy stir fried chicken.,4.0
+29,Mutton Rogan Josh,mutton.jpg,550,650,non-veg,Main Non-Veg,Sad,Cold,Adult,Kashmiri warming curry.,4.0
+30,Fish Curry,fish_curry.jpg,480,400,non-veg,Main Non-Veg,Neutral,Sunny,Senior,Tangy coconut fish.,4.0
+31,Chicken Dum Biryani,chick_biryani.jpg,380,700,non-veg,Biryani,Happy,All,All,Hyderabadi spiced rice.,4.8
+32,Mutton Biryani,mutton_biryani.jpg,480,800,non-veg,Biryani,Happy,All,Adult,Rich goat meat rice.,4.0
+33,Veg Biryani,veg_biryani.jpg,280,500,veg,Biryani,Neutral,All,All,Garden fresh veg rice.,4.0
+34,Curd Rice,curd_rice.jpg,180,300,veg,Biryani,Stressed,Sunny,Senior,Cooling yogurt rice.,4.0
+35,Butter Naan,naan.jpg,60,150,veg,Breads,Neutral,All,All,Soft buttery bread.,4.0
+37,Tandoori Roti,roti.jpg,40,100,veg,Breads,Neutral,All,Senior,Whole wheat clay oven bread.,4.0
+38,Gulab Jamun,jamun.jpg,120,300,veg,Dessert,Sad,Rainy,All,Warm sweet dumplings.,4.0
+39,Rasmalai,rasmalai.jpg,150,250,veg,Dessert,Happy,Sunny,All,Cool milk sponge.,4.0
+42,Fresh Lime Soda,lime_soda.jpg,80,100,veg,Beverage,Tired,Sunny,All,Refreshing fizz.,4.0
+44,Masala Chai,chai.jpg,50,80,veg,Beverage,Sad,Rainy,Senior,Spiced indian tea.,4.0
+52,Fish & Chips,fish_chips.jpg,380,600,non-veg,Appetizers,Happy,Sunny,Child,Classic crispy fish.,4.0
+53,Chicken 65,chick_65.jpg,300,450,non-veg,Tandoori,Angry,All,Adult,Spicy hyderabadi starter.,4.0
+55,Apollo Fish,apollo_fish.jpg,360,400,non-veg,Tandoori,Happy,All,Adult,Spicy hyderabadi fish.,4.0
+56,Chilli Chicken,chilli_chick.jpg,320,450,non-veg,Asian,Angry,All,Adult,Spicy indo-chinese classic.,4.0
+60,Malai Kofta,kofta.jpg,300,500,veg,Main Veg,Sad,All,Child,Sweet creamy dumpling.,4.0
+61,Mutton Masala,mutton_masala.jpg,500,600,non-veg,Main Non-Veg,Happy,All,Adult,Rich spicy goat curry.,4.0
+62,Prawns Masala,prawns.jpg,480,500,non-veg,Main Non-Veg,Happy,Sunny,Adult,Coastal spiced prawns.,4.0
+63,Jeera Rice,jeera_rice.jpg,160,300,veg,Biryani,Neutral,All,All,Cumin flavored rice.,4.0
+70,Tom Yum Soup,soup_tomyum.jpg,200,150,non-veg,Soups,Tired,Cold,Adult,Spicy thai prawns soup.,4.0
+74,Mutton Seekh Kebab,mutton_seekh.jpg,450,500,non-veg,Tandoori,Happy,All,Adult,Minced goat skewers.,4.0
+75,Tangdi Kebab,tangdi.jpg,380,450,non-veg,Tandoori,Happy,All,Adult,Spiced chicken drumsticks.,4.0
+76,Loose Prawns,loose_prawns.jpg,450,400,non-veg,Tandoori,Angry,All,Adult,Crispy spicy prawns.,4.0
+78,Kung Pao Chicken,kung_pao.jpg,350,450,non-veg,Asian,Angry,All,Adult,Chicken with peanuts.,4.0
+80,Pepperoni Pizza,pizza_pep.jpg,550,700,non-veg,Pizza,Happy,All,Adult,Pork salami slices.,4.0
+86,Andhra Chicken Curry,andhra_chick.jpg,400,500,non-veg,Main Non-Veg,Angry,All,Adult,Very spicy curry.,4.0
+87,Chicken Chettinad,chettinad.jpg,420,550,non-veg,Main Non-Veg,Angry,All,Adult,Pepper spiced curry.,4.0
+89,Keema Biryani,keema_biryani.jpg,450,750,non-veg,Biryani,Happy,All,Adult,Minced meat rice.,4.0

@@ -1,0 +1,144 @@
+:root {
+  --bg-dark: #050505;
+  --glass-bg: rgba(20, 20, 25, 0.85);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --primary-glow: #00f2ff;
+  --text-main: #ffffff;
+}
+
+body {
+  margin: 0;
+  background-color: var(--bg-dark);
+  background-image: url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=2070&auto=format&fit=crop');
+  background-size: cover;
+  background-attachment: fixed;
+  color: var(--text-main);
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: ''; position: fixed; inset: 0;
+  background: rgba(5, 5, 10, 0.85); 
+  backdrop-filter: blur(12px); /* Restored heavy blur */
+  -webkit-backdrop-filter: blur(12px);
+  z-index: -1;
+}
+
+/* GLASS EFFECT & NEON GLOW */
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(25px); /* Increased for premium feel */
+  -webkit-backdrop-filter: blur(25px);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); /* Added depth */
+}
+
+.glass-panel:hover, .hover-glow:hover {
+  border-color: rgba(0, 242, 255, 0.5);
+  box-shadow: 0 0 25px rgba(0, 242, 255, 0.2); /* Enhanced glow */
+  transform: translateY(-4px);
+}
+
+.app-container { width: 100%; min-height: 100vh; padding: 0; display: flex; flex-direction: column; align-items: center; }
+
+/* MASONRY LAYOUT */
+.masonry-container { column-count: 3; column-gap: 20px; }
+.masonry-item { break-inside: avoid; margin-bottom: 20px; }
+@media (max-width: 1024px) { .masonry-container { column-count: 2; } }
+@media (max-width: 600px) { .masonry-container { column-count: 1; } }
+
+/* SIDE BY SIDE RECOMMENDATIONS - NO WASTED SPACE */
+.rec-split-container { 
+  display: flex; 
+  gap: 20px; 
+  width: 100%; 
+  align-items: flex-start;
+}
+
+.rec-column {
+  flex: 1;
+  min-width: 300px;
+  height: fit-content;
+}
+
+/* INPUTS - Restored Futuristic Style */
+.glass-input {
+  background: rgba(0, 0, 0, 0.6); 
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: white; 
+  padding: 14px; 
+  border-radius: 10px; 
+  width: 100%; 
+  outline: none; 
+  transition: 0.3s;
+  font-size: 1rem;
+}
+.glass-input:focus { 
+  border-color: var(--primary-glow); 
+  box-shadow: 0 0 15px rgba(0, 242, 255, 0.3);
+}
+.glass-input option { background-color: #1a1a1a; color: white; }
+
+/* BUTTONS - Restored Premium Glow */
+.btn-primary {
+  background: rgba(0, 242, 255, 0.1); 
+  border: 1px solid var(--primary-glow); 
+  color: var(--primary-glow);
+  padding: 12px 24px; 
+  border-radius: 50px; 
+  font-weight: 700; 
+  cursor: pointer;
+  text-transform: uppercase; 
+  letter-spacing: 1.5px; 
+  transition: 0.4s;
+}
+.btn-primary:hover { 
+  background: var(--primary-glow); 
+  color: #000; 
+  box-shadow: 0 0 30px var(--primary-glow); 
+}
+
+.animate-in { animation: fadeIn 0.6s cubic-bezier(0.23, 1, 0.32, 1); }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+/* RESTORE PREMIUM GLASS UI */
+.glass-panel {
+  background: rgba(15, 15, 20, 0.8) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 242, 255, 0.2) !important;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8) !important;
+}
+
+/* RESTORE FUTURISTIC INPUTS */
+.glass-input {
+  background: rgba(0, 0, 0, 0.6) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #00f2ff !important; /* Neon text */
+  padding: 12px !important;
+  border-radius: 8px !important;
+  appearance: none; /* Removes white browser styling */
+}
+
+.glass-input:focus {
+  border-color: #00f2ff !important;
+  box-shadow: 0 0 15px rgba(0, 242, 255, 0.4) !important;
+}
+
+/* FIX RECOMMENDATION LAYOUT */
+.rec-split-container {
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 20px;
+  align-items: flex-start;
+  margin-top: 20px;
+}
+
+.rec-column {
+  flex: 1;
+  min-width: 0; /* Prevents overflow */
+}
