@@ -1,51 +1,78 @@
-id,name,image_file,price,calories,type,category,mood_tag,weather_tag,age_group,description,rating
-1,Tomato Basil Soup,soup_tomato.jpg,150,120,veg,Soups,Sad,Rainy,All,Warm roasted tomato comfort.,4.0
-2,Sweet Corn Soup,soup_corn.jpg,140,150,veg,Soups,Neutral,Rainy,Child,Classic creamy corn soup.,4.0
-4,Hot & Sour Soup,soup_hot.jpg,160,160,veg,Soups,Angry,Cold,Adult,Spicy kick to clear sinuses.,4.0
-7,Nachos Supreme,nachos.jpg,280,450,veg,Appetizers,Happy,Sunny,Child,Loaded with cheese and salsa.,4.0
-8,Cheese Fondue,fondue.jpg,450,600,veg,Appetizers,Happy,Cold,All,Melted swiss cheese pot.,4.0
-9,Paneer Tikka,paneer_tikka.jpg,320,380,veg,Tandoori,Happy,All,All,Char-grilled spiced cottage cheese.,4.0
-11,Chicken Tikka,chick_tikka.jpg,380,420,non-veg,Tandoori,Happy,All,Adult,Classic red spiced chicken.,4.0
-12,Malai Kebab,malai_kebab.jpg,400,450,non-veg,Tandoori,Sad,All,Child,Creamy mild chicken melt.,4.0
-13,Veg Manchurian,manchurian.jpg,250,300,veg,Asian,Angry,Rainy,Adult,Spicy fried veg balls.,4.0
-14,Chilli Paneer,chilli_paneer.jpg,280,350,veg,Asian,Angry,All,Adult,Spicy cottage cheese toss.,4.0
-15,Chicken Lollipop,lollipop.jpg,320,400,non-veg,Asian,Happy,Sunny,Child,Fried chicken drums.,4.0
-18,Margherita Pizza,pizza_margherita.jpg,350,500,veg,Pizza,Happy,Sunny,Child,Classic cheese and basil.,4.0
-19,Peppy Paneer Pizza,pizza_paneer.jpg,420,600,veg,Pizza,Happy,All,Adult,Spicy paneer topping.,4.0
-20,BBQ Chicken Pizza,pizza_bbq.jpg,480,650,non-veg,Pizza,Happy,All,Adult,Smoky bbq chicken.,4.0
-22,Red Sauce Pasta,pasta_red.jpg,300,400,veg,Pizza,Angry,Sunny,Adult,Tangy tomato arrabbiata.,4.0
-23,Paneer Butter Masala,pbm.jpg,350,500,veg,Main Veg,Happy,All,All,Rich creamy tomato gravy.,4.0
-24,Dal Makhani,dal_makhani.jpg,280,450,veg,Main Veg,Sad,Rainy,Senior,Slow cooked black lentils.,4.0
-25,Palak Paneer,palak.jpg,320,380,veg,Main Veg,Neutral,All,Senior,Healthy spinach gravy.,4.0
-26,Aloo Gobi,aloo_gobi.jpg,240,300,veg,Main Veg,Neutral,Sunny,All,Home style cauliflower.,4.0
-27,Butter Chicken,butter_chick.jpg,450,600,non-veg,Main Non-Veg,Happy,All,All,The legendary classic.,4.0
-28,Kadai Chicken,kadai_chick.jpg,420,500,non-veg,Main Non-Veg,Angry,All,Adult,Spicy stir fried chicken.,4.0
-29,Mutton Rogan Josh,mutton.jpg,550,650,non-veg,Main Non-Veg,Sad,Cold,Adult,Kashmiri warming curry.,4.0
-30,Fish Curry,fish_curry.jpg,480,400,non-veg,Main Non-Veg,Neutral,Sunny,Senior,Tangy coconut fish.,4.0
-31,Chicken Dum Biryani,chick_biryani.jpg,380,700,non-veg,Biryani,Happy,All,All,Hyderabadi spiced rice.,4.8
-32,Mutton Biryani,mutton_biryani.jpg,480,800,non-veg,Biryani,Happy,All,Adult,Rich goat meat rice.,4.0
-33,Veg Biryani,veg_biryani.jpg,280,500,veg,Biryani,Neutral,All,All,Garden fresh veg rice.,4.0
-34,Curd Rice,curd_rice.jpg,180,300,veg,Biryani,Stressed,Sunny,Senior,Cooling yogurt rice.,4.0
-35,Butter Naan,naan.jpg,60,150,veg,Breads,Neutral,All,All,Soft buttery bread.,4.0
-37,Tandoori Roti,roti.jpg,40,100,veg,Breads,Neutral,All,Senior,Whole wheat clay oven bread.,4.0
-38,Gulab Jamun,jamun.jpg,120,300,veg,Dessert,Sad,Rainy,All,Warm sweet dumplings.,4.0
-39,Rasmalai,rasmalai.jpg,150,250,veg,Dessert,Happy,Sunny,All,Cool milk sponge.,4.0
-42,Fresh Lime Soda,lime_soda.jpg,80,100,veg,Beverage,Tired,Sunny,All,Refreshing fizz.,4.0
-44,Masala Chai,chai.jpg,50,80,veg,Beverage,Sad,Rainy,Senior,Spiced indian tea.,4.0
-52,Fish & Chips,fish_chips.jpg,380,600,non-veg,Appetizers,Happy,Sunny,Child,Classic crispy fish.,4.0
-53,Chicken 65,chick_65.jpg,300,450,non-veg,Tandoori,Angry,All,Adult,Spicy hyderabadi starter.,4.0
-55,Apollo Fish,apollo_fish.jpg,360,400,non-veg,Tandoori,Happy,All,Adult,Spicy hyderabadi fish.,4.0
-56,Chilli Chicken,chilli_chick.jpg,320,450,non-veg,Asian,Angry,All,Adult,Spicy indo-chinese classic.,4.0
-60,Malai Kofta,kofta.jpg,300,500,veg,Main Veg,Sad,All,Child,Sweet creamy dumpling.,4.0
-61,Mutton Masala,mutton_masala.jpg,500,600,non-veg,Main Non-Veg,Happy,All,Adult,Rich spicy goat curry.,4.0
-62,Prawns Masala,prawns.jpg,480,500,non-veg,Main Non-Veg,Happy,Sunny,Adult,Coastal spiced prawns.,4.0
-63,Jeera Rice,jeera_rice.jpg,160,300,veg,Biryani,Neutral,All,All,Cumin flavored rice.,4.0
-70,Tom Yum Soup,soup_tomyum.jpg,200,150,non-veg,Soups,Tired,Cold,Adult,Spicy thai prawns soup.,4.0
-74,Mutton Seekh Kebab,mutton_seekh.jpg,450,500,non-veg,Tandoori,Happy,All,Adult,Minced goat skewers.,4.0
-75,Tangdi Kebab,tangdi.jpg,380,450,non-veg,Tandoori,Happy,All,Adult,Spiced chicken drumsticks.,4.0
-76,Loose Prawns,loose_prawns.jpg,450,400,non-veg,Tandoori,Angry,All,Adult,Crispy spicy prawns.,4.0
-78,Kung Pao Chicken,kung_pao.jpg,350,450,non-veg,Asian,Angry,All,Adult,Chicken with peanuts.,4.0
-80,Pepperoni Pizza,pizza_pep.jpg,550,700,non-veg,Pizza,Happy,All,Adult,Pork salami slices.,4.0
-86,Andhra Chicken Curry,andhra_chick.jpg,400,500,non-veg,Main Non-Veg,Angry,All,Adult,Very spicy curry.,4.0
-87,Chicken Chettinad,chettinad.jpg,420,550,non-veg,Main Non-Veg,Angry,All,Adult,Pepper spiced curry.,4.0
-89,Keema Biryani,keema_biryani.jpg,450,750,non-veg,Biryani,Happy,All,Adult,Minced meat rice.,4.0
+id	name	type		mood_tag	weather_tag	spice_level	calories	age_group	description	rating	Prices
+101	Veg Dum Biryani	veg	Biryani	Happy	Clear	Medium, High	450	Teen	Slow-cooked aromatic rice with garden veggies.	4.8	199
+102	Paneer Biryani	veg	Biryani	Surprise	Snow	Medium, High	480	Adult	Rich saffron rice layered with spiced paneer.	4.7	229
+103	Paneer Pulao	veg	Biryani	Neutral	Clouds	Low, Medium	350	Child	Mildly spiced fragrant rice with soft paneer.	4.5	209
+104	Mushroom Pulav	veg	Biryani	Fear	Atmosphere	Low	280	Senior	Earthy mushrooms tossed in delicate basmati.	4.2	219
+105	Schezwan Rice	veg	Biryani	Angry	Thunderstorm	High, Extra Spicy	400	Teen	Fiery wok-tossed rice for a spicy reset.	4.6	189
+106	Veg Soya Biryani	veg	Biryani	Disgust	Clear	Medium	320	Adult	High-protein soya chunks in biryani spices.	4	205
+107	Kashmiri Pulav	veg	Biryani	Sad	Rain	Low	380	Senior	Sweet & savory rice with dry fruits and nuts.	4.4	239
+201	Chicken Dum Biryani	non-veg	Biryani	Happy	Clear	Medium, High	550	Teen	The ultimate celebration of spice and chicken.	4.9	269
+202	Mutton Biryani	non-veg	Biryani	Surprise	Snow	High, Extra Spicy	650	Adult	Traditional slow-cooked mutton and rice.	4.8	349
+203	Egg Biryani	non-veg	Biryani	Neutral	Clouds	Medium	380	Adult	Spicy hard-boiled eggs with aromatic rice.	4.3	199
+204	Chicken Pulav	non-veg	Biryani	Fear	Atmosphere	Low, Medium	320	Senior	Simple home-style chicken and mild rice.	4.1	239
+205	Spicy Chicken Rice	non-veg	Biryani	Angry	Thunderstorm	Extra Spicy	600	Teen	Intense chili-loaded rice to fuel your mood.	4.7	249
+206	Fish Biryani	non-veg	Biryani	Disgust	Clear	Medium	450	Adult	Coastal style spiced fish layered with rice.	3.8	299
+207	Chicken Keema Rice	non-veg	Biryani	Sad	Rain	High	500	Adult	Minced chicken with warm spices for comfort.	4.5	279
+301	Clear Veg Soup	veg	Soups	Disgust	Clear	Low	87	Adult	Light and refreshing garden vegetable broth.	4.2	109
+302	Tomato Basil Soup	veg	Soups	Sad	Rain	Low, Medium	150	All	Warm roasted tomato comfort with basil.	4.5	119
+303	Hot & Sour Soup	veg	Soups	Angry	Thunderstorm	Medium, High	160	Adult	Spicy kick to clear the senses.	4.4	129
+304	Mushroom Cream	veg	Soups	Fear	Atmosphere	Low	164	Senior	Soothing and earthy cream of mushroom.	4.3	139
+305	Pumpkin Ginger	veg	Soups	Surprise	Snow	Low, Medium	140	Adult	Unique blend of sweet pumpkin and zingy ginger.	4.1	129
+306	Spinach Lentil	veg	Soups	Happy	Clouds	Low	110	Adult	Nutrient-dense green soup for a healthy boost.	4.6	125
+307	Sweet Corn Soup	veg	Soups	Neutral	Drizzle	Low	140	Child	Classic creamy corn soup loved by kids.	4.5	135
+401	Chicken Clear Soup	non-veg	Soups	Neutral	Drizzle	Low	95	Child	Simple and healthy chicken broth.	4.4	149
+402	Hot & Sour Chicken	non-veg	Soups	Angry	Thunderstorm	Medium, High	220	Adult	Spicy and tangy chicken soup.	4.3	159
+403	Chicken Noodle	non-veg	Soups	Fear	Atmosphere	Low, Medium	114	Child	Classic comfort noodles in chicken broth.	4.7	169
+404	Mutton Paya	non-veg	Soups	Sad	Rain	Medium	650	Senior	Traditional slow-cooked bone broth.	4.8	199
+405	Tom Yum Soup	non-veg	Soups	Disgust	Clear	Medium, High	200	Adult	Spicy Thai prawns soup with lemongrass.	4.2	189
+406	Cream of Chicken	non-veg	Soups	Surprise	Snow	Low	296	Adult	Rich and velvety chicken cream soup.	4.4	169
+407	Egg Drop Soup	non-veg	Soups	Happy	Clouds	Low	200	Senior	Mild and protein-rich comfort soup.	4.1	139
+501	Hara Bhara Kebab	veg	Starters	Neutral	Clouds	Low	180	Senior	Nutritious spinach and green pea patties.	4.4	189
+502	Paneer Tikka	veg	Starters	Happy	Clear	Medium, High	320	All	Char-grilled spiced cottage cheese cubes.	4.7	229
+503	Chilli Paneer	veg	Starters	Angry	Thunderstorm	Extra Spicy	350	Teen	Spicy Indo-Chinese tossed paneer cubes.	4.5	219
+504	Gobi 65	veg	Starters	Surprise	Snow	High	300	Adult	Crispy deep-fried cauliflower florets.	4.3	199
+505	Veg Spring Rolls	veg	Starters	Disgust	Clear	Low	360	Teen	Crunchy rolls filled with fresh veggies.	4.2	179
+506	Crispy Corn	veg	Starters	Fear	Atmosphere	Medium	300	Child	Lightly spiced fried golden corn kernels.	4.6	189
+507	Cheese Corn Balls	veg	Starters	Sad	Rain	Low	450	Child	Melt-in-mouth cheesy potato and corn spheres.	4.8	209
+601	Chicken 65	non-veg	Starters	Angry	Thunderstorm	High	300	Adult	Classic South-Indian spicy fried chicken.	4.7	229
+602	Chicken Lollipop	non-veg	Starters	Happy	Clear	Medium	400	Child	Fried chicken wings shaped like lollipops.	4.9	249
+603	Mutton Seekh Kebab	non-veg	Starters	Neutral	Clouds	High	450	Adult	Minced mutton skewers grilled in tandoor.	4.6	289
+604	Apollo Fish	non-veg	Starters	Surprise	Snow	Medium	360	Adult	Hyderabadi style spicy pan-fried fish pieces.	4.4	269
+605	Chicken Liver Fry	non-veg	Starters	Disgust	Clear	High	380	Adult	Nutrient-rich chicken liver with black pepper.	3.9	239
+606	Fish Fingers	non-veg	Starters	Fear	Atmosphere	Low	280	Child	Crispy crumbed fish fillets with dip.	4.5	259
+607	Malai Chicken Kebab	non-veg	Starters	Sad	Rain	Low	400	Senior	Creamy, mild, and melt-in-mouth chicken chunks.	4.7	279
+701	Aloo Gobi	veg	Main Course	Disgust	Clear	Medium	165	All	Classic home-style cauliflower and potatoes.	4.3	189
+702	Palak Paneer	veg	Main Course	Fear	Atmosphere	Low	189	Senior	Fresh spinach puree with soft paneer cubes.	4.6	219
+703	Dal Makhani	veg	Main Course	Sad	Rain	Low	450	Senior	Slow-cooked buttery black lentils.	4.7	209
+704	Kadai Paneer	veg	Main Course	Angry	Thunderstorm	Extra Spicy	550	Teen	Paneer tossed with bell peppers and hot spices.	4.5	229
+705	Paneer Butter Masala	veg	Main Course	Happy	Clear	Low, Medium	400	Child	Creamy tomato gravy with soft paneer.	4.8	239
+706	Malai Kofta	veg	Main Course	Surprise	Snow	Low	500	Child	Fried dumplings in a sweet, white gravy.	4.4	249
+707	Mix Veg Curry	veg	Main Course	Neutral	Clouds	Medium	350	Adult	Seasonal vegetables in a balanced onion gravy.	4.2	199
+801	Butter Chicken	non-veg	Main Course	Happy	Clear	Low	450	Child	World-famous creamy tomato chicken curry.	4.9	279
+802	Mutton Rogan Josh	non-veg	Main Course	Sad	Rain	High	700	Adult	Kashmiri style aromatic slow-cooked mutton.	4.8	329
+803	Kadai Chicken	non-veg	Main Course	Angry	Thunderstorm	Extra Spicy	420	Teen	Spicy chicken cooked in a traditional wok.	4.6	269
+804	Tangy Fish Curry	non-veg	Main Course	Surprise	Snow	High	323	Senior	Spicy and sour coastal style fish gravy.	4.5	289
+805	Egg Masala	non-veg	Main Course	Neutral	Clouds	Medium	320	Adult	Spiced onion and tomato egg curry.	4.1	199
+806	Steamed Fish	non-veg	Main Course	Disgust	Clear	Low	220	Senior	Healthy, low-calorie ginger soy steamed fish.	4	269
+807	Chicken Stew	non-veg	Main Course	Fear	Atmosphere	Low	412	Senior	Mildly spiced creamy chicken and veg stew.	4.3	239
+901	Rasgulla	veg	Dessert	Surprise	Snow	Low	120	All	Soft, spongy cottage cheese balls in syrup.	4.5	129
+902	Rasmalai	veg	Dessert	Happy	Clear	Low	150	All	Sweet cottage cheese discs in saffron milk.	4.8	149
+903	Gulab Jamun	veg	Dessert	Sad	Rain	Low	300	All	Deep-fried milk solids in warm sugar syrup.	4.9	119
+904	Dark Chocolate Cake	veg	Dessert	Angry	Thunderstorm	Low	450	Adult	Intense cocoa cake to soothe your stress.	4.7	179
+905	Fruit Custard	veg	Dessert	Neutral	Clouds	Low	180	Senior	Refreshing blend of fruits and creamy custard.	4.4	139
+906	Sizzling Brownie	veg	Dessert	Surprise	Snow	Low	550	Teen	Warm brownie with cold ice cream and chocolate.	4.6	219
+907	Sugar-Free Halwa	veg	Dessert	Fear	Atmosphere	Low	200	Senior	Health-conscious moong dal halwa with stevia.	4.1	169
+1001	BBQ Wings	non-veg	Appetizer	Happy	Clear	Medium, High	480	Teen	Smoky and glazed chicken wings.	4.7	249
+1002	Fish & Chips	non-veg	Appetizer	Neutral	Clouds	Low	380	Child	Classic crispy fish with potato fries.	4.5	299
+1003	Pepperoni Pizza	non-veg	Appetizer	Surprise	Snow	Medium	550	Teen	Classic cheesy pizza with spicy pepperoni.	4.6	349
+1004	Grilled Chicken	non-veg	Appetizer	Fear	Atmosphere	Low	320	Adult	Lean protein seasoned with herbs.	4.4	289
+1005	Fried Calamari	non-veg	Appetizer	Disgust	Clear	Low	350	Adult	Golden fried squid rings with dip.	4.1	319
+1006	Mutton Cutlets	non-veg	Appetizer	Sad	Rain	High	420	Senior	Deep-fried minced mutton and potato patties.	4.3	279
+1007	Peri Peri Chicken	non-veg	Appetizer	Angry	Thunderstorm	Extra Spicy	400	Teen	Fiery grilled chicken with peri-peri rub.	4.8	269
+1101	Curd Rice	veg	Sides	Sad	Clear	Low	180	Senior	Cooling tempered rice for gut health.	4.6	149
+1102	Jeera Rice	veg	Sides	Neutral	Clouds	Low	160	All	Basmati rice tempered with cumin seeds.	4.2	159
+1103	Sambar Rice	veg	Sides	Neutral	Rain	Medium	220	Adult	Lentil-based southern comfort rice bowl.	4.5	169
+1104	Lemon Rice	veg	Sides	Surprise	Clear	Medium	240	Adult	Tangy and zesty yellow rice with peanuts.	4.4	149
+1105	Ghee Rice	veg	Sides	Happy	Clear	Low	300	Child	Simple, buttery rice for a comforting meal.	4.7	179
+1106	Egg Fried Rice	non-veg	Sides	Neutral	Clouds	Medium	450	Child	Wok-tossed rice with scrambled eggs.	4.5	189
+1107	Chicken Khichdi	non-veg	Sides	Sad	Drizzle	Low	250	Senior	Soft rice and lentil mash with shredded chicken.	4.3	209
