@@ -1,7 +1,11 @@
 import React from 'react';
-import { Star } from 'lucide-react';
+import { Star, Leaf, Heart } from 'lucide-react';
 
 const MenuItem = ({ item, onAdd, onRemove, cartCount }) => {
+  // FIXED: Removed the unnecessary backslashes from the strings
+  const isSocial = item.description?.includes("Social Impact");
+  const isLocal = item.description?.includes("Locally Sourced");
+
   return (
     <div className="hover-glow" style={{ 
         display:'flex', 
@@ -15,21 +19,22 @@ const MenuItem = ({ item, onAdd, onRemove, cartCount }) => {
       <div style={{flexGrow:1, paddingRight:'15px'}}>
         <div style={{display:'flex', alignItems:'center', gap:'10px', marginBottom:'4px'}}>
            <div style={{width:'10px', height:'10px', borderRadius:'50%', background: item.type.toLowerCase()==='veg' ? '#2ecc71' : '#e74c3c'}}></div>
-           <h4 style={{margin:0, fontSize:'1.1rem', color:'#fff', fontWeight:'600', display:'flex', alignItems:'center', gap:'8px'}}>
+           <h4 style={{margin:0, fontSize:'1.1rem', color:'#fff', fontWeight:'600', display:'flex', alignItems:'center', gap:'8px', flexWrap:'wrap'}}>
              {item.name}
-             {/* RATING DISPLAY */}
              <span style={{ display:'flex', alignItems:'center', gap:'3px', fontSize:'0.85rem', color:'#ffd700', fontWeight:'400' }}>
                 <Star size={14} fill="#ffd700" color="#ffd700" /> {item.rating}
              </span>
+             {/* FIXED: Removed backslashes here too */}
+             {isSocial && <span style={{fontSize:'0.6rem', color:'#2ecc71', border:'1px solid #2ecc71', padding:'1px 5px', borderRadius:'8px'}}>🤝 Charity choice</span>}
+             {isLocal && <span style={{fontSize:'0.6rem', color:'var(--primary-glow)', border:'1px solid var(--primary-glow)', padding:'1px 5px', borderRadius:'8px'}}>🌱 Local Farmer</span>}
            </h4>
         </div>
         
-        {/* Dimmed description/calories */}
         <div style={{fontSize:'0.85rem', color:'#777', lineHeight:'1.4', fontWeight:'300'}}>
             {item.description} <span style={{color:'#444', marginLeft:'5px'}}>• {item.calories} cal</span>
         </div>
         
-        <div style={{fontSize:'1rem', color:'var(--primary-glow)', fontWeight:'bold', marginTop:'6px', textShadow:'0 0 5px rgba(0, 242, 255, 0.3)'}}>₹{item.price}</div>
+        <div style={{fontSize:'1rem', color:'var(--primary-glow)', fontWeight:'bold', marginTop:'6px'}}>₹{item.price}</div>
       </div>
 
       <div style={{display:'flex', alignItems:'center', gap:'10px'}}>
