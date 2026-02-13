@@ -1,11 +1,13 @@
 import os
 import datetime
 import uuid
+import json
 import pandas as pd
 import numpy as np
 import cv2
 import base64
-import requests  # Required for Weather API
+import requests
+import random
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
@@ -13,7 +15,7 @@ app = Flask(__name__)
 CORS(app)
 
 CSV_FILE = 'menu_data.csv'
-# Get your key from weatherapi.com
+STATS_FILE = 'impact_stats.json'  # Permanent ledger for social impact
 WEATHER_API_KEY = "da92ba39e070d8db6566c5f55b2ff087"
 
 # --- 1. DATA LOADER & SAVER ---
@@ -24,20 +26,16 @@ def load_menu():
         print("CSV NOT FOUND")
         return []
     try:
-        df = pd.read_csv(file_path)
+        df = pd.read_csv(file_path, on_bad_lines='skip')
         df = df.fillna('')
-        # Standardize strings for matching
         df['mood_tag'] = df['mood_tag'].astype(str).str.strip()
         df['weather_tag'] = df['weather_tag'].astype(str).str.strip()
         df['age_group'] = df['age_group'].astype(str).str.strip()
         df['category'] = df['category'].astype(str).str.strip()
-        
-        # Ensure rating column exists
         if 'rating' not in df.columns:
             df['rating'] = 4.0
         else:
             df['rating'] = pd.to_numeric(df['rating'], errors='coerce').fillna(4.0)
-            
         return df
     except Exception as e: 
         print(f"CSV LOAD ERROR: {e}")
@@ -47,6 +45,18 @@ def save_menu(df):
     base_path = os.path.dirname(os.path.abspath(__file__))
     file_path = os.path.join(base_path, CSV_FILE)
     df.to_csv(file_path, index=False)
+
+def update_permanent_stats(charity_amt):
+    """Saves charity data permanently even after 24h order cleanup."""
+    stats = {"total_charity": 0, "total_orders": 0}
+    if os.path.exists(STATS_FILE):
+        with open(STATS_FILE, 'r') as f:
+            try: stats = json.load(f)
+            except: pass
+    stats["total_charity"] += charity_amt
+    stats["total_orders"] += 1
+    with open(STATS_FILE, 'w') as f:
+        json.dump(stats, f)
 
 menu_df = load_menu()
 orders_db = {} 
@@ -67,63 +77,46 @@ def cleanup_old_orders():
 # --- 3. UPDATED WEATHER HELPER ---
 def get_real_weather_info():
     hour = datetime.datetime.now().hour
-    # Logic: 5 PM (17) to 6 AM (6) is Evening
     is_evening = hour >= 17 or hour < 6
-    
     try:
-        # If you have an API Key, use it, else fallback
         if WEATHER_API_KEY != "PASTE_YOUR_KEY_HERE":
             url = f"http://api.weatherapi.com/v1/current.json?key={WEATHER_API_KEY}&q=auto:ip"
             response = requests.get(url, timeout=2).json()
-            condition = response['current']['condition']['text']
-            return condition 
-    except:
-        pass
-    
+            return response['current']['condition']['text'] 
+    except: pass
     return "Evening Breeze" if is_evening else "Light Sunny"
 
-# --- 4. AI RECOMMENDATION LOGIC (UPDATED WITH HARD CONSTRAINTS) ---
+# --- 4. AI RECOMMENDATION LOGIC (VARIETY SHUFFLE & AGRI-BOOST) ---
 def ai_recommend(age, mood, weather, restrictions=None, hunger=None, category=None):
     global menu_df
     menu_df = load_menu() 
     if len(menu_df) == 0: return []
     df = menu_df.copy()
     
-    # 1. HARD CONSTRAINT: DIETARY TYPE (Veg/Non-Veg)
     req_type = restrictions.get('type', 'Both') if restrictions else 'Both'
     if req_type != 'Both':
         df = df[df['type'].str.lower() == req_type.lower()]
 
-    # 2. HARD CONSTRAINT: CATEGORY (e.g., Biryani, Soups)
-    # This ensures that if Biryani is picked, Starters won't show up.
     if category and category != 'Any':
         df = df[df['category'].str.contains(category, case=False, na=False)]
 
-    # 3. AGE FILTERING (Strict biological alignment)
     user_age = int(age)
     if user_age > 60:
         df = df[df['age_group'].isin(['Senior', 'All'])]
     elif user_age < 13:
         df = df[df['age_group'].isin(['Child', 'All'])]
     
-    # Check if df is empty after hard constraints
     if df.empty: return []
 
-    # 4. WEIGHTED SCORING (Expert Analyst Model)
     df['score'] = 0.0
     target_group = 'Senior' if user_age > 60 else 'Child' if user_age < 13 else 'Adult'
-    
-    # Weight A: Age Group Match (35% priority)
     df.loc[df['age_group'] == target_group, 'score'] += 15
-    
-    # Weight B: Mood Match (30% priority)
-    # Using split() to handle multiple tags if you use comma-separated values
     df.loc[df['mood_tag'].str.contains(mood, case=False, na=False), 'score'] += 12
-    
-    # Weight C: Weather Match (20% priority)
     df.loc[df['weather_tag'].str.contains(weather, case=False, na=False), 'score'] += 8
     
-    # Weight D: Calorie/Hunger Preference (15% priority)
+    # NEW: Agri-Connect Social Boost (+2 points for local sourcing)
+    df.loc[df['description'].str.contains("Locally Sourced", case=False, na=False), 'score'] += 2
+    
     if hunger:
         df['calories_num'] = pd.to_numeric(df['calories'], errors='coerce').fillna(300)
         if hunger == 'Light':
@@ -131,11 +124,11 @@ def ai_recommend(age, mood, weather, restrictions=None, hunger=None, category=No
         elif hunger in ['Heavy', 'Starving']:
             df.loc[df['calories_num'] > 500, 'score'] += 10
 
-    # Add Rating as a "Tie-Breaker"
     df['score'] += df['rating']
 
-    # Return top 6 highly relevant items
-    return df.sort_values(by=['score', 'rating'], ascending=False).head(6).to_dict(orient='records')
+    # VARIETY FIX: Pick top 12 matches, then sample 6 to avoid repetition
+    top_pool = df.sort_values(by=['score', 'rating'], ascending=False).head(12)
+    return top_pool.sample(n=min(len(top_pool), 6)).to_dict(orient='records')
 
 # --- 5. ROUTES ---
 
@@ -150,15 +143,9 @@ def get_menu():
 def manual_recommend():
     data = request.json
     weather_desc = get_real_weather_info() 
-    
-    recs = ai_recommend(
-        data.get('age', 25), 
-        data.get('mood', 'Neutral'), 
-        weather_desc,
+    recs = ai_recommend(data.get('age', 25), data.get('mood', 'Neutral'), weather_desc,
         restrictions={'type': data.get('preference', 'Both')},
-        hunger=data.get('hunger'),
-        category=data.get('category')
-    )
+        hunger=data.get('hunger'), category=data.get('category'))
     return jsonify(recs)
 
 @app.route('/api/ai/analyze', methods=['POST'])
@@ -169,33 +156,68 @@ def analyze_face():
         img_data = data['image'].split(',')[1]
         nparr = np.frombuffer(base64.b64decode(img_data), np.uint8)
         frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+
+        # 1. PRE-PROCESSING: Convert to Grayscale to remove lighting noise
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         
-        analysis = DeepFace.analyze(frame, actions=['emotion'], enforce_detection=False)
+        # 2. STANDARDIZE: Resize for consistent AI landmark detection
+        frame_ready = cv2.resize(gray, (640, 480))
+        
+        # 3. RE-COLOR: Convert back to 3-channel for library compatibility
+        frame_final = cv2.cvtColor(frame_ready, cv2.COLOR_GRAY2RGB)
+        
+        # 4. ROBUST ANALYSIS: Set enforce_detection to False
+        # This prevents the "Face Not Recognized" crash if you are tilted
+        analysis = DeepFace.analyze(
+            frame_final, 
+            actions=['emotion'], 
+            enforce_detection=False, 
+            detector_backend='opencv' # More reliable for webcams than standard VGG
+        )
+        
         result = analysis[0] if isinstance(analysis, list) else analysis
-        weather_desc = get_real_weather_info()
         
+        # Expert Mood Smoothing Logic
+        detected_mood = result['dominant_emotion']
+        if result['emotion']['happy'] > 90 and result['emotion']['neutral'] > 1:
+            detected_mood = 'neutral'
+
+        weather_desc = get_real_weather_info()
         return jsonify({
             "status": "success",
             "detected": { 
-                "mood": result['dominant_emotion'], 
+                "mood": detected_mood, 
                 "age": data.get('age', 25), 
-                "weather": weather_desc,
                 "weather_desc": weather_desc 
             },
-            "recommendations": ai_recommend(data.get('age', 25), result['dominant_emotion'], weather_desc)
+            "recommendations": ai_recommend(data.get('age', 25), detected_mood, weather_desc)
         })
     except Exception as e:
+        # Detailed terminal logging for debugging
+        print(f"AI SYSTEM LOG: {str(e)}") 
         return jsonify({"status": "error", "recommendations": []})
 
 @app.route('/api/order/place', methods=['POST'])
 def place_order():
     data = request.json
     token = str(uuid.uuid4().int)[:6]
+    
+    # CHARITY CALCULATION: Tracks impact for permanent ledger
+    charity_total = sum(5 for item in data.get('items', []) if "Social Impact" in item.get('description', ''))
+    update_permanent_stats(charity_total)
+    
     orders_db[token] = { 
         "token": token, "table": data.get('table'), "items": data.get('items'), 
-        "status": "Accepted", "timestamp": datetime.datetime.now().isoformat()
+        "charity_earned": charity_total, "status": "Accepted", "timestamp": datetime.datetime.now().isoformat()
     }
-    return jsonify({"success": True, "token": token})
+    return jsonify({"success": True, "token": token, "charity_earned": charity_total})
+
+@app.route('/api/admin/stats', methods=['GET'])
+def get_admin_stats():
+    """Permanent endpoint for Dashboard analytics."""
+    if os.path.exists(STATS_FILE):
+        with open(STATS_FILE, 'r') as f: return jsonify(json.load(f))
+    return jsonify({"total_charity": 0, "total_orders": 0})
 
 @app.route('/api/order/status/<token>', methods=['GET'])
 def get_order_status(token):
@@ -218,7 +240,6 @@ def rate_order():
         return jsonify({"success": True})
     return jsonify({"success": False}), 400
 
-# --- 6. ADMIN ROUTES ---
 @app.route('/api/admin/orders', methods=['GET'])
 def get_orders(): return jsonify(orders_db)
 
