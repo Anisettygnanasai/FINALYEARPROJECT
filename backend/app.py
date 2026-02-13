@@ -14,7 +14,8 @@ CORS(app)
 
 CSV_FILE = 'menu_data.csv'
 # Get your key from weatherapi.com
-WEATHER_API_KEY = os.environ.get("WEATHER_API_KEY") # This reads the key from Render settings
+WEATHER_API_KEY = "da92ba39e070d8db6566c5f55b2ff087"
+
 # --- 1. DATA LOADER & SAVER ---
 def load_menu():
     base_path = os.path.dirname(os.path.abspath(__file__))
@@ -81,43 +82,59 @@ def get_real_weather_info():
     
     return "Evening Breeze" if is_evening else "Light Sunny"
 
-# --- 4. AI RECOMMENDATION LOGIC ---
+# --- 4. AI RECOMMENDATION LOGIC (UPDATED WITH HARD CONSTRAINTS) ---
 def ai_recommend(age, mood, weather, restrictions=None, hunger=None, category=None):
     global menu_df
     menu_df = load_menu() 
     if len(menu_df) == 0: return []
     df = menu_df.copy()
     
-    # A. STRICT FILTERS
+    # 1. HARD CONSTRAINT: DIETARY TYPE (Veg/Non-Veg)
     req_type = restrictions.get('type', 'Both') if restrictions else 'Both'
     if req_type != 'Both':
         df = df[df['type'].str.lower() == req_type.lower()]
 
+    # 2. HARD CONSTRAINT: CATEGORY (e.g., Biryani, Soups)
+    # This ensures that if Biryani is picked, Starters won't show up.
+    if category and category != 'Any':
+        df = df[df['category'].str.contains(category, case=False, na=False)]
+
+    # 3. AGE FILTERING (Strict biological alignment)
     user_age = int(age)
     if user_age > 60:
         df = df[df['age_group'].isin(['Senior', 'All'])]
     elif user_age < 13:
         df = df[df['age_group'].isin(['Child', 'All'])]
     
-    # B. WEIGHTED SCORING
+    # Check if df is empty after hard constraints
+    if df.empty: return []
+
+    # 4. WEIGHTED SCORING (Expert Analyst Model)
     df['score'] = 0.0
     target_group = 'Senior' if user_age > 60 else 'Child' if user_age < 13 else 'Adult'
     
+    # Weight A: Age Group Match (35% priority)
     df.loc[df['age_group'] == target_group, 'score'] += 15
-    df.loc[df['mood_tag'].str.contains(mood, case=False, na=False), 'score'] += 10
-    df.loc[df['weather_tag'].str.contains(weather, case=False, na=False), 'score'] += 10
     
-    if category and category != 'Any':
-        df.loc[df['category'].str.contains(category, case=False, na=False), 'score'] += 10
-
+    # Weight B: Mood Match (30% priority)
+    # Using split() to handle multiple tags if you use comma-separated values
+    df.loc[df['mood_tag'].str.contains(mood, case=False, na=False), 'score'] += 12
+    
+    # Weight C: Weather Match (20% priority)
+    df.loc[df['weather_tag'].str.contains(weather, case=False, na=False), 'score'] += 8
+    
+    # Weight D: Calorie/Hunger Preference (15% priority)
     if hunger:
+        df['calories_num'] = pd.to_numeric(df['calories'], errors='coerce').fillna(300)
         if hunger == 'Light':
-            df.loc[pd.to_numeric(df['calories'], errors='coerce') < 300, 'score'] += 10
+            df.loc[df['calories_num'] < 300, 'score'] += 10
         elif hunger in ['Heavy', 'Starving']:
-            df.loc[pd.to_numeric(df['calories'], errors='coerce') > 600, 'score'] += 10
+            df.loc[df['calories_num'] > 500, 'score'] += 10
 
+    # Add Rating as a "Tie-Breaker"
     df['score'] += df['rating']
 
+    # Return top 6 highly relevant items
     return df.sort_values(by=['score', 'rating'], ascending=False).head(6).to_dict(orient='records')
 
 # --- 5. ROUTES ---
@@ -235,6 +252,5 @@ def delete_item():
     save_menu(menu_df)
     return jsonify({"success": True})
 
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+if __name__ == '__main__':
+    app.run(debug=True, port=5000)
