@@ -7,7 +7,8 @@ import CartDrawer from './components/CartDrawer';
 import AdminDashboard from './components/AdminDashboard';
 import { QrCode, ArrowLeft, Star } from 'lucide-react';
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+const API_URL = "http://localhost:5000/api";
+
 export default function App() {
   const [view, setView] = useState('landing');
   const [cart, setCart] = useState([]);
@@ -205,12 +206,12 @@ export default function App() {
             <button onClick={() => setView('ai-select')} style={{ background: 'none', border: 'none', color: '#888', cursor: 'pointer' }}>← Back</button>
             <h2 style={{ textAlign: 'center', marginBottom: '30px' }}>Customize Your Meal</h2>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-                <div><label style={{ color: '#ccc', fontSize: '0.9rem' }}>Mood</label><select className="glass-input" onChange={e => setManualForm({ ...manualForm, mood: e.target.value })}><option>Happy</option><option>Sad</option><option>Angry</option><option>Neutral</option></select></div>
-                <div><label style={{ color: '#ccc', fontSize: '0.9rem' }}>Hunger</label><select className="glass-input" onChange={e => setManualForm({ ...manualForm, hunger: e.target.value })}><option>Light</option><option>Medium</option><option>Starving</option></select></div>
-                <div><label style={{ color: '#ccc', fontSize: '0.9rem' }}>Preference</label><select className="glass-input" onChange={e => setManualForm({ ...manualForm, category: e.target.value })}><option>Any</option><option>Biryani</option><option>Soups</option><option>Pizza</option></select></div>
-                <div><label style={{ color: '#ccc', fontSize: '0.9rem' }}>Spice</label><select className="glass-input" onChange={e => setManualForm({ ...manualForm, spice: e.target.value })}><option>Low</option><option>Medium</option><option>High</option></select></div>
+                <div><label style={{ color: '#ccc', fontSize: '0.9rem' }}>How are you feeling right now?</label><select className="glass-input" onChange={e => setManualForm({ ...manualForm, mood: e.target.value })}><option>Happy</option><option>Sad</option><option>Angry</option><option>Neutral</option><option>Disgust</option><option>Surprise</option><option>Fear</option></select></div>
+                <div><label style={{ color: '#ccc', fontSize: '0.9rem' }}>How hungry are you at the moment?</label><select className="glass-input" onChange={e => setManualForm({ ...manualForm, hunger: e.target.value })}><option>Light</option><option>Medium</option><option>Starving</option></select></div>
+                <div><label style={{ color: '#ccc', fontSize: '0.9rem' }}>What kind of food are you craving for?</label><select className="glass-input" onChange={e => setManualForm({ ...manualForm, category: e.target.value })}><option>Any</option><option>Biryani</option><option>Soups</option><option>Starters</option><option>Main Course</option><option>Dessert</option></select></div>
+                <div><label style={{ color: '#ccc', fontSize: '0.9rem' }}>How spicy do you want your meal?</label><select className="glass-input" onChange={e => setManualForm({ ...manualForm, spice: e.target.value })}><option>Low</option><option>Medium</option><option>High</option></select></div>
             </div>
-            <div style={{ marginTop: '20px' }}><label style={{ color: '#ccc', fontSize: '0.9rem' }}>Diet Type</label><select className="glass-input" onChange={e => setManualForm({ ...manualForm, type: e.target.value })}><option value="Both">No Preference</option><option value="Veg">Pure Veg</option><option value="Non-Veg">Non-Veg</option></select></div>
+            <div style={{ marginTop: '20px' }}><label style={{ color: '#ccc', fontSize: '0.9rem' }}>Do you have any dietary preference or restriction?</label><select className="glass-input" onChange={e => setManualForm({ ...manualForm, type: e.target.value })}><option value="Both">No Preference</option><option value="Veg">Pure Veg</option><option value="Non-Veg">Non-Veg</option></select></div>
             <button className="btn-primary" style={{ width: '100%', marginTop: '30px' }} onClick={handleManualSubmit}>Get Recommendations</button>
           </div>
         )}
