@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Trash2, RefreshCw, Star } from 'lucide-react';
+import { Plus, Trash2, RefreshCw, Star, Heart } from 'lucide-react';
 
 const AdminDashboard = ({ API_URL, onLogout }) => {
   const [tab, setTab] = useState('orders');
   const [orders, setOrders] = useState({});
   const [menuItems, setMenuItems] = useState([]);
+  // NEW STATE FOR PERSISTENT CHARITY
+  const [stats, setStats] = useState({ total_charity: 0, total_orders: 0 });
   
-  // FULL ATTRIBUTES STATE
   const [newItem, setNewItem] = useState({
     name: '', price: '', category: 'Starters', type: 'veg', 
     calories: '200', description: '', 
@@ -14,11 +15,16 @@ const AdminDashboard = ({ API_URL, onLogout }) => {
   });
 
   useEffect(() => {
-    fetchOrders();
-    fetchMenu();
+    fetchAllData();
     const interval = setInterval(fetchOrders, 5000);
     return () => clearInterval(interval);
   }, []);
+
+  const fetchAllData = () => {
+    fetchOrders();
+    fetchMenu();
+    fetch(`${API_URL}/admin/stats`).then(res => res.json()).then(setStats);
+  };
 
   const fetchOrders = () => { fetch(`${API_URL}/admin/orders`).then(res => res.json()).then(setOrders).catch(console.error); };
   const fetchMenu = () => { fetch(`${API_URL}/menu`).then(res => res.json()).then(setMenuItems); };
@@ -44,6 +50,19 @@ const AdminDashboard = ({ API_URL, onLogout }) => {
 
   return (
     <div className="animate-in" style={{maxWidth:'1200px', margin:'0 auto'}}>
+      {/* NEW SOCIAL IMPACT MONITOR */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '30px' }}>
+        <div className="glass-panel" style={{ padding: '20px', borderLeft: '4px solid #2ecc71', textAlign:'center' }}>
+          <Heart color="#2ecc71" style={{marginBottom:'10px'}}/>
+          <h4 style={{ margin: 0, color: '#888' }}>Total Charity Collected</h4>
+          <h2 style={{ margin: '5px 0', color: '#2ecc71' }}>₹{stats.total_charity}</h2>
+        </div>
+        <div className="glass-panel" style={{ padding: '20px', borderLeft: '4px solid #00f2ff', textAlign:'center' }}>
+          <h4 style={{ margin: 0, color: '#888' }}>Social Impact (Children Fed)</h4>
+          <h2 style={{ margin: '5px 0', color: '#00f2ff' }}>{Math.floor(stats.total_charity / 20)}</h2>
+        </div>
+      </div>
+
       <header className="glass-panel" style={{ display:'flex', justifyContent:'space-between', padding:'20px', marginBottom:'30px' }}>
         <h2 style={{ margin:0, color:'var(--primary-glow)' }}>KITCHEN DASHBOARD</h2>
         <button className="btn-primary" onClick={onLogout} style={{background:'transparent', border:'1px solid #ff4757', color:'#ff4757'}}>Logout</button>
@@ -60,7 +79,10 @@ const AdminDashboard = ({ API_URL, onLogout }) => {
           <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(300px, 1fr))', gap:'20px' }}>
             {Object.values(orders).map((order) => (
               <div key={order.token} style={{ background:'rgba(255,255,255,0.05)', padding:'20px', borderRadius:'16px', borderLeft:`4px solid ${order.status === 'Accepted' ? '#ff9f43' : '#00d2d3'}` }}>
-                <h3>#{order.token}</h3><div style={{ marginBottom:'15px', color:'#ccc' }}>{order.items.map((i, idx) => <div key={idx}>1x {i.name}</div>)}</div>
+                <h3>#{order.token}</h3>
+                <div style={{ marginBottom:'15px', color:'#ccc' }}>{order.items.map((i, idx) => <div key={idx}>1x {i.name}</div>)}</div>
+                {/* SHOW INDIVIDUAL CHARITY PER ORDER */}
+                {order.charity_earned > 0 && <div style={{color:'#2ecc71', fontSize:'0.8rem', marginBottom:'10px'}}>🤝 Impact Order (₹{order.charity_earned} charity)</div>}
                 <div style={{ display:'flex', gap:'10px' }}>
                   <button onClick={() => updateStatus(order.token, 'Preparing')} style={{ flex:1, padding:'8px', background:'#333', border:'none', color:'white' }}>Prep</button>
                   <button onClick={() => updateStatus(order.token, 'Ready')} style={{ flex:1, padding:'8px', background:'#2e86de', border:'none', color:'white' }}>Ready</button>
@@ -72,7 +94,6 @@ const AdminDashboard = ({ API_URL, onLogout }) => {
         </div>
       ) : (
         <div style={{ display:'grid', gridTemplateColumns:'1fr 2fr', gap:'30px' }}>
-          {/* ADD ITEM FORM - RESTORED FULL INPUTS */}
           <div className="glass-panel" style={{ padding:'30px', height:'fit-content' }}>
             <h3>Add New Item</h3>
             <div style={{ display:'flex', flexDirection:'column', gap:'15px' }}>
@@ -82,14 +103,9 @@ const AdminDashboard = ({ API_URL, onLogout }) => {
                     <input placeholder="Calories" className="glass-input" onChange={e=>setNewItem({...newItem, calories:e.target.value})} />
                 </div>
                 <select className="glass-input" onChange={e=>setNewItem({...newItem, category:e.target.value})}><option>Starters</option><option>Soups</option><option>Main Course</option><option>Biryani</option></select>
-                
                 <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'10px'}}>
                     <select className="glass-input" onChange={e=>setNewItem({...newItem, type:e.target.value})}><option value="veg">Veg</option><option value="non-veg">Non-Veg</option></select>
                     <select className="glass-input" onChange={e=>setNewItem({...newItem, age_group:e.target.value})}><option>All</option><option>Child</option><option>Adult</option><option>Senior</option></select>
-                </div>
-                <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'10px'}}>
-                    <select className="glass-input" onChange={e=>setNewItem({...newItem, mood_tag:e.target.value})}><option>Happy</option><option>Sad</option><option>Angry</option></select>
-                    <select className="glass-input" onChange={e=>setNewItem({...newItem, weather_tag:e.target.value})}><option>Sunny</option><option>Rainy</option><option>Cold</option></select>
                 </div>
                 <button className="btn-primary" onClick={handleAddItem}><Plus size={18}/> Add Item</button>
             </div>
