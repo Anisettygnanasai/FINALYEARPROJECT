@@ -7,15 +7,21 @@ const MenuItem = ({ item, onAdd, onRemove, cartCount }) => {
   const isLocal = item.description?.includes("Locally Sourced");
 
   return (
-    <div className="hover-glow" style={{ 
-        display:'flex', 
-        justifyContent:'space-between', 
-        alignItems:'center', 
-        padding:'15px 0', 
-        borderBottom: '1px solid rgba(255,255,255,0.1)', 
-        marginBottom: '5px',
-        transition: 'all 0.3s ease'
-    }}>
+    <div
+  className="hover-glow"
+  style={{
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+
+    padding: '14px 16px',
+    borderRadius: '12px',
+    background: 'rgba(255,255,255,0.02)',
+
+    transition: 'all 0.3s ease',
+    boxSizing: 'border-box'
+  }}
+>
       <div style={{flexGrow:1, paddingRight:'15px'}}>
         <div style={{display:'flex', alignItems:'center', gap:'10px', marginBottom:'4px'}}>
            <div style={{width:'10px', height:'10px', borderRadius:'50%', background: item.type.toLowerCase()==='veg' ? '#2ecc71' : '#e74c3c'}}></div>

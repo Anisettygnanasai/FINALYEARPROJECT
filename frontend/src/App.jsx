@@ -246,33 +246,65 @@ export default function App() {
       </p>
     </header>
 
-    <div className="rec-split-container">
-      {getRecsByType('veg').length > 0 && (
-        <div className="glass-panel rec-column" style={{ padding: '20px', borderTop: '4px solid #2ecc71' }}>
-          <h2 style={{ color: '#2ecc71', marginBottom: '15px', borderBottom: '1px solid #333' }}>Veg</h2>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            {getRecsByType('veg').map(i => <MenuItem key={i.id} item={i} onAdd={addToCart} onRemove={removeFromCart} cartCount={getItemCount(i.id)} />)}
-          </div>
-        </div>
-      )}
+            <div className="rec-split-container">
 
-      {getRecsByType('non-veg').length > 0 && (
-        <div className="glass-panel rec-column" style={{ padding: '20px', borderTop: '4px solid #e74c3c' }}>
-          <h2 style={{ color: '#e74c3c', marginBottom: '15px', borderBottom: '1px solid #333' }}>Non-Veg</h2>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            {getRecsByType('non-veg').map(i => <MenuItem key={i.id} item={i} onAdd={addToCart} onRemove={removeFromCart} cartCount={getItemCount(i.id)} />)}
-          </div>
-        </div>
-      )}
+  {getRecsByType('veg').length > 0 && (
+    <div
+      className="glass-panel rec-column"
+      style={{ padding: '20px', borderTop: '4px solid #2ecc71' }}
+    >
+      <h2 style={{ color: '#2ecc71', marginBottom: '15px', borderBottom: '1px solid #333' }}>
+        Veg
+      </h2>
+
+      {/* Scrollable area */}
+      <div
+  className="menu-grid"
+>
+        {getRecsByType('veg').map(i => (
+          <MenuItem
+            key={i.id}
+            item={i}
+            onAdd={addToCart}
+            onRemove={removeFromCart}
+            cartCount={getItemCount(i.id)}
+          />
+        ))}
+      </div>
     </div>
-  </div>
-) : view === 'ai-results' && (
-  <div style={{textAlign:'center', marginTop:'10vh'}}>
-    <h2>Face Not Recognized</h2>
-    <p>Please try again with better lighting.</p>
-    <button className="btn-primary" onClick={() => setView('ai-camera')}>Back to Camera</button>
-  </div>
-)}
+  )}
+
+  {getRecsByType('non-veg').length > 0 && (
+    <div
+      className="glass-panel rec-column"
+      style={{ padding: '20px', borderTop: '4px solid #e74c3c' }}
+    >
+      <h2 style={{ color: '#e74c3c', marginBottom: '15px', borderBottom: '1px solid #333' }}>
+        Non-Veg
+      </h2>
+
+      {/* Scrollable area */}
+      <div
+  className="menu-grid"
+>
+
+        {getRecsByType('non-veg').map(i => (
+          <MenuItem
+            key={i.id}
+            item={i}
+            onAdd={addToCart}
+            onRemove={removeFromCart}
+            cartCount={getItemCount(i.id)}
+          />
+        ))}
+      </div>
+    </div>
+  )}
+
+</div>
+
+          </div>
+        )}
 
         {view === 'track' && (
           <div className="glass-panel animate-in" style={{ maxWidth: '500px', margin: '50px auto', padding: '50px', textAlign: 'center' }}>

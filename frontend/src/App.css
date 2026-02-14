@@ -53,18 +53,53 @@ body::before {
 @media (max-width: 600px) { .masonry-container { column-count: 1; } }
 
 /* SIDE BY SIDE RECOMMENDATIONS - NO WASTED SPACE */
-.rec-split-container { 
-  display: flex; 
-  gap: 20px; 
-  width: 100%; 
-  align-items: flex-start;
+.rec-split-container {
+  width: 100%;
+  max-width: 100%;
+  align-self: stretch;   /* 👈 IMPORTANT under align-items:center */
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
+
 .rec-column {
-  flex: 1;
-  min-width: 300px;
-  height: fit-content;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;           /* 👈 keeps glass border intact */
 }
+
+
+
+.rec-column div::-webkit-scrollbar {
+  width: 6px;
+}
+
+.rec-column div::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+}
+
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 👈 col-4 = 3 per row */
+
+  gap: 12px;
+
+  width: 100%;
+  box-sizing: border-box;
+
+  max-height: 320px;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  padding: 0 10px;
+
+  align-content: start;
+}
+
+
+
 
 /* INPUTS - Restored Futuristic Style */
 .glass-input {
@@ -129,16 +164,3 @@ body::before {
   box-shadow: 0 0 15px rgba(0, 242, 255, 0.4) !important;
 }
 
-/* FIX RECOMMENDATION LAYOUT */
-.rec-split-container {
-  display: flex !important;
-  flex-direction: row !important;
-  gap: 20px;
-  align-items: flex-start;
-  margin-top: 20px;
-}
-
-.rec-column {
-  flex: 1;
-  min-width: 0; /* Prevents overflow */
-}

@@ -26,7 +26,9 @@ def load_menu():
         print("CSV NOT FOUND")
         return []
     try:
-        df = pd.read_csv(file_path, on_bad_lines='skip')
+        # menu_data.csv is tab/whitespace separated in this project — allow the parser
+        # to auto-detect the delimiter using the python engine for robustness.
+        df = pd.read_csv(file_path, sep=None, engine='python')
         df = df.fillna('')
         df['mood_tag'] = df['mood_tag'].astype(str).str.strip()
         df['weather_tag'] = df['weather_tag'].astype(str).str.strip()
