@@ -75,6 +75,8 @@ export default function App() {
         body: JSON.stringify({ ...manualForm, age: ageInput, preference: manualForm.type }) 
     });
     const data = await res.json();
+    
+    // TIMESTAMP LOGIC: 17:00 (5 PM) to 06:00 (6 AM) is Evening
     const hour = new Date().getHours();
     const displayWeather = (hour >= 17 || hour < 6) ? "Evening Breeze" : "Light Sunny";
 
@@ -95,22 +97,9 @@ export default function App() {
 
   const placeOrder = async (table) => {
     if (!table) return alert("Enter Table #");
-    const res = await fetch(`${API_URL}/order/place`, { 
-        method: 'POST', 
-        headers: { 'Content-Type': 'application/json' }, 
-        body: JSON.stringify({ table, items: cart }) 
-    });
+    const res = await fetch(`${API_URL}/order/place`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ table, items: cart }) });
     const data = await res.json();
-    if(data.success) { 
-        setToken(data.token);
-        // NEW SOCIAL FEEDBACK INJECTED
-        if(data.charity_earned > 0) {
-            alert(`🌟 Social Impact: Your order contributed ₹${data.charity_earned} to charity! Token: ${data.token}`);
-        }
-        setCart([]); 
-        setIsCartOpen(false); 
-        setView('track'); 
-    }
+    if(data.success) { setToken(data.token); setCart([]); setIsCartOpen(false); setView('track'); }
   };
 
   const checkStatus = async () => {
@@ -219,10 +208,10 @@ export default function App() {
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                 <div><label style={{ color: '#ccc', fontSize: '0.9rem' }}>How are you feeling right now?</label><select className="glass-input" onChange={e => setManualForm({ ...manualForm, mood: e.target.value })}><option>Happy</option><option>Sad</option><option>Angry</option><option>Neutral</option><option>Disgust</option><option>Surprise</option><option>Fear</option></select></div>
                 <div><label style={{ color: '#ccc', fontSize: '0.9rem' }}>How hungry are you at the moment?</label><select className="glass-input" onChange={e => setManualForm({ ...manualForm, hunger: e.target.value })}><option>Light</option><option>Medium</option><option>Starving</option></select></div>
-                <div><label style={{ color: '#ccc', fontSize: '0.9rem' }}>What kind of food are you craving?</label><select className="glass-input" onChange={e => setManualForm({ ...manualForm, category: e.target.value })}><option>Any</option><option>Biryani</option><option>Soups</option><option>Starters</option><option>Main Course</option><option>Dessert</option><option>Appetizer</option></select></div>
-                <div><label style={{ color: '#ccc', fontSize: '0.9rem' }}>How spicy do you want your meal?</label><select className="glass-input" onChange={e => setManualForm({ ...manualForm, spice: e.target.value })}><option>Low</option><option>Medium</option><option>High</option><option>Extra Spicy</option></select></div>
+                <div><label style={{ color: '#ccc', fontSize: '0.9rem' }}>What kind of food are you craving for?</label><select className="glass-input" onChange={e => setManualForm({ ...manualForm, category: e.target.value })}><option>Any</option><option>Biryani</option><option>Soups</option><option>Starters</option><option>Main Course</option><option>Dessert</option></select></div>
+                <div><label style={{ color: '#ccc', fontSize: '0.9rem' }}>How spicy do you want your meal?</label><select className="glass-input" onChange={e => setManualForm({ ...manualForm, spice: e.target.value })}><option>Low</option><option>Medium</option><option>High</option></select></div>
             </div>
-            <div style={{ marginTop: '20px' }}><label style={{ color: '#ccc', fontSize: '0.9rem' }}>Do you have any dietary preference or reference?</label><select className="glass-input" onChange={e => setManualForm({ ...manualForm, type: e.target.value })}><option value="Both">No Preference</option><option value="Veg">Pure Veg</option><option value="Non-Veg">Non-Veg</option></select></div>
+            <div style={{ marginTop: '20px' }}><label style={{ color: '#ccc', fontSize: '0.9rem' }}>Do you have any dietary preference or restriction?</label><select className="glass-input" onChange={e => setManualForm({ ...manualForm, type: e.target.value })}><option value="Both">No Preference</option><option value="Veg">Pure Veg</option><option value="Non-Veg">Non-Veg</option></select></div>
             <button className="btn-primary" style={{ width: '100%', marginTop: '30px' }} onClick={handleManualSubmit}>Get Recommendations</button>
           </div>
         )}
@@ -235,16 +224,13 @@ export default function App() {
           </div>
         )}
 
-        {view === 'ai-results' && aiResult && aiResult.status !== "error" ? (
-  <div className="animate-in" style={{ padding: '20px' }}>
-    <header style={{ textAlign: 'center', marginBottom: '30px' }}>
-      <button onClick={() => setView('landing')} style={{ background: 'none', border: 'none', color: '#ccc', cursor: 'pointer' }}><ArrowLeft size={18} /> Home</button>
-      <h1 style={{ textShadow: '0 0 15px var(--primary-glow)' }}>Curated for You</h1>
-      {/* FIXED: Using optional chaining ?. to prevent crash if backend data is missing */}
-      <p style={{ color: 'var(--primary-glow)' }}>
-        Mood: {aiResult.detected?.mood || "Neutral"} • Weather: {aiResult.detected?.weather_desc || "Sunny"}
-      </p>
-    </header>
+        {view === 'ai-results' && aiResult && (
+          <div className="animate-in" style={{ padding: '20px' }}>
+            <header style={{ textAlign: 'center', marginBottom: '30px' }}>
+              <button onClick={() => setView('landing')} style={{ background: 'none', border: 'none', color: '#ccc', cursor: 'pointer' }}><ArrowLeft size={18} /> Home</button>
+              <h1 style={{ textShadow: '0 0 15px var(--primary-glow)' }}>Curated for You</h1>
+              <p style={{ color: 'var(--primary-glow)' }}>Mood: {aiResult.detected.mood} • Weather: {aiResult.detected.weather_desc}</p>
+            </header>
 
             <div className="rec-split-container">
 
