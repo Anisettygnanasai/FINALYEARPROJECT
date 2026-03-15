@@ -4,7 +4,6 @@ import uuid
 import json
 import pandas as pd
 import numpy as np
-import cv2
 import base64
 import requests
 import random
@@ -161,6 +160,7 @@ def manual_recommend():
 @app.route('/api/ai/analyze', methods=['POST'])
 def analyze_face():
     try:
+        import cv2
         from deepface import DeepFace
         data = request.json
         img_data = data['image'].split(',')[1]
@@ -205,7 +205,7 @@ def analyze_face():
     except Exception as e:
         # Detailed terminal logging for debugging
         print(f"AI SYSTEM LOG: {str(e)}") 
-        return jsonify({"status": "error", "recommendations": []})
+        return jsonify({"status": "error", "message": "AI face analysis unavailable on this deployment.", "recommendations": []})
 
 @app.route('/api/order/place', methods=['POST'])
 def place_order():
