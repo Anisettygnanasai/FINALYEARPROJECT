@@ -7,7 +7,7 @@ import CartDrawer from './components/CartDrawer';
 import AdminDashboard from './components/AdminDashboard';
 import { QrCode, ArrowLeft, Star } from 'lucide-react';
 
-const API_URL = "http://localhost:5000/api";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 export default function App() {
   const [view, setView] = useState('landing');
