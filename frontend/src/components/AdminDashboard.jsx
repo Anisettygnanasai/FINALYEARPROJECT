@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Trash2, RefreshCw, Star, Heart } from 'lucide-react';
+import { Plus, Trash2, RefreshCw, Heart, CheckCircle2, XCircle } from 'lucide-react';
 
 const AdminDashboard = ({ API_URL, onLogout }) => {
   const [tab, setTab] = useState('orders');
@@ -46,6 +46,15 @@ const AdminDashboard = ({ API_URL, onLogout }) => {
         await fetch(`${API_URL}/admin/menu/delete`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ name }) }); 
         fetchMenu(); 
     }
+  };
+
+  const toggleAvailability = async (item) => {
+    await fetch(`${API_URL}/admin/menu/availability`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ name: item.name, is_available: !(item.is_available !== false) })
+    });
+    fetchMenu();
   };
 
   return (
@@ -115,14 +124,42 @@ const AdminDashboard = ({ API_URL, onLogout }) => {
             <h3>Current Menu ({menuItems.length})</h3>
             <div style={{ maxHeight:'60vh', overflowY:'auto' }}>
               {menuItems.map((item, idx) => (
-                <div key={idx} style={{ display:'flex', justifyContent:'space-between', padding:'12px', borderBottom:'1px solid rgba(255,255,255,0.05)' }}>
+                <div key={idx} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'12px', borderBottom:'1px solid rgba(255,255,255,0.05)' }}>
                   <div>
-                    <div style={{ fontWeight:'bold' }}>{item.name}</div>
+                    <div style={{ fontWeight:'bold', display:'flex', alignItems:'center', gap:'8px' }}>
+                      {item.name}
+                      {item.is_available !== false ? (
+                        <span style={{ fontSize:'0.7rem', color:'#2ecc71', border:'1px solid #2ecc71', padding:'2px 8px', borderRadius:'12px' }}>Available</span>
+                      ) : (
+                        <span style={{ fontSize:'0.7rem', color:'#ff6b81', border:'1px solid #ff6b81', padding:'2px 8px', borderRadius:'12px' }}>Unavailable</span>
+                      )}
+                    </div>
                     <div style={{ fontSize:'0.8rem', color:'#888' }}>
                         {item.category} • ₹{item.price} • {item.rating}★
                     </div>
                   </div>
-                  <button onClick={() => handleDeleteItem(item.name)} style={{ color:'#ff4757', background:'none', border:'none', cursor:'pointer' }}><Trash2 size={18}/></button>
+                  <div style={{ display:'flex', alignItems:'center', gap:'12px' }}>
+                    <button
+                      onClick={() => toggleAvailability(item)}
+                      title={item.is_available !== false ? 'Mark unavailable' : 'Mark available'}
+                      className="glass-panel"
+                      style={{
+                        display:'flex',
+                        alignItems:'center',
+                        justifyContent:'center',
+                        width:'34px',
+                        height:'34px',
+                        borderRadius:'50%',
+                        cursor:'pointer',
+                        border:'none',
+                        color: item.is_available !== false ? '#2ecc71' : '#ff6b81',
+                        background:'rgba(255,255,255,0.04)'
+                      }}
+                    >
+                      {item.is_available !== false ? <CheckCircle2 size={18} /> : <XCircle size={18} />}
+                    </button>
+                    <button onClick={() => handleDeleteItem(item.name)} style={{ color:'#ff4757', background:'none', border:'none', cursor:'pointer' }}><Trash2 size={18}/></button>
+                  </div>
                 </div>
               ))}
             </div>
