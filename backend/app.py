@@ -64,6 +64,15 @@ def load_menu():
         df['price'] = pd.to_numeric(df['price'], errors='coerce').fillna(0)
         df['is_available'] = df['is_available'].astype(str).str.lower().isin(['true', '1', 'yes'])
 
+        if 'rating' not in df.columns:
+            df['rating'] = 4.0
+        else:
+            df['rating'] = pd.to_numeric(df['rating'], errors='coerce').fillna(4.0)
+
+        if 'is_available' not in df.columns:
+            df['is_available'] = True
+        else:
+            df['is_available'] = df['is_available'].astype(str).str.lower().isin(['true', '1', 'yes'])
         return df
     except Exception as e:
         print(f"CSV LOAD ERROR: {e}")
