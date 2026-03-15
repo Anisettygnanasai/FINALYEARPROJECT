@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { Camera, Utensils } from 'lucide-react';
+import { Camera, Utensils, HeartHandshake, Hash } from 'lucide-react';
 
 // --- 1. DEFINE HEROCARD FIRST ---
 const HeroCard = ({ icon: Icon, title, desc, onClick }) => {
@@ -39,7 +39,7 @@ const HeroCard = ({ icon: Icon, title, desc, onClick }) => {
 };
 
 // --- 2. DEFINE LANDINGPAGE SECOND ---
-const LandingPage = ({ setView }) => (
+const LandingPage = ({ setView, impactStats, recentImpactStats }) => (
   <div style={{ textAlign:'center', marginTop:'10vh' }}>
     <h1 style={{ 
       fontSize:'5rem', 
@@ -70,6 +70,38 @@ const LandingPage = ({ setView }) => (
         desc="Explore our master collection" 
         onClick={() => setView('menu')} 
       />
+    </div>
+
+    <div style={{ marginTop:'40px', display:'flex', justifyContent:'center' }}>
+      <div className="glass-panel" style={{ padding:'18px 28px', display:'flex', flexDirection:'column', gap:'14px', alignItems:'center', flexWrap:'wrap', justifyContent:'center', maxWidth:'880px' }}>
+        <div style={{ display:'flex', gap:'25px', alignItems:'center', flexWrap:'wrap', justifyContent:'center' }}>
+          <div style={{ display:'flex', alignItems:'center', gap:'8px', color:'#00f2ff' }}>
+            <Hash size={18} />
+            <span style={{ color:'#999', fontSize:'0.9rem' }}>Tokens Served:</span>
+            <strong style={{ color:'#fff' }}>{impactStats.total_orders || 0}</strong>
+          </div>
+          <div style={{ display:'flex', alignItems:'center', gap:'8px', color:'#2ecc71' }}>
+            <HeartHandshake size={18} />
+            <span style={{ color:'#999', fontSize:'0.9rem' }}>Donated to Charity:</span>
+            <strong style={{ color:'#fff' }}>₹{impactStats.total_charity || 0}</strong>
+          </div>
+        </div>
+
+        <div style={{
+          width:'100%',
+          borderTop:'1px solid rgba(255,255,255,0.08)',
+          paddingTop:'12px',
+          color:'#d9ffe8',
+          fontSize:'0.95rem',
+          textAlign:'center',
+          lineHeight:1.5
+        }}>
+          🚀 In the last <strong>{recentImpactStats.recent_window || 5}</strong> orders, 
+          <strong style={{ color:'#2ecc71' }}> {recentImpactStats.charity_orders_count || 0}</strong> customers donated 
+          <strong style={{ color:'#2ecc71' }}> ₹{recentImpactStats.recent_charity_amount || 0}</strong> through Social Impact items, 
+          creating impact for <strong style={{ color:'#00f2ff' }}>{recentImpactStats.recent_social_impact_count || 0}</strong> people.
+        </div>
+      </div>
     </div>
   </div>
 );

@@ -1,10 +1,11 @@
 import React from 'react';
-import { Star, Leaf, Heart } from 'lucide-react';
+import { Star } from 'lucide-react';
 
 const MenuItem = ({ item, onAdd, onRemove, cartCount }) => {
   // FIXED: Removed the unnecessary backslashes from the strings
   const isSocial = item.description?.includes("Social Impact");
   const isLocal = item.description?.includes("Locally Sourced");
+  const isAvailable = item.is_available !== false;
 
   return (
     <div className="hover-glow" style={{ 
@@ -14,7 +15,8 @@ const MenuItem = ({ item, onAdd, onRemove, cartCount }) => {
         padding:'15px 0', 
         borderBottom: '1px solid rgba(255,255,255,0.1)', 
         marginBottom: '5px',
-        transition: 'all 0.3s ease'
+        transition: 'all 0.3s ease',
+        opacity: isAvailable ? 1 : 0.6
     }}>
       <div style={{flexGrow:1, paddingRight:'15px'}}>
         <div style={{display:'flex', alignItems:'center', gap:'10px', marginBottom:'4px'}}>
@@ -27,6 +29,7 @@ const MenuItem = ({ item, onAdd, onRemove, cartCount }) => {
              {/* FIXED: Removed backslashes here too */}
              {isSocial && <span style={{fontSize:'0.6rem', color:'#2ecc71', border:'1px solid #2ecc71', padding:'1px 5px', borderRadius:'8px'}}>🤝 Charity choice</span>}
              {isLocal && <span style={{fontSize:'0.6rem', color:'var(--primary-glow)', border:'1px solid var(--primary-glow)', padding:'1px 5px', borderRadius:'8px'}}>🌱 Local Farmer</span>}
+             {!isAvailable && <span style={{fontSize:'0.6rem', color:'#ff6b81', border:'1px solid #ff6b81', padding:'1px 5px', borderRadius:'8px'}}>❌ Unavailable</span>}
            </h4>
         </div>
         
@@ -38,13 +41,27 @@ const MenuItem = ({ item, onAdd, onRemove, cartCount }) => {
       </div>
 
       <div style={{display:'flex', alignItems:'center', gap:'10px'}}>
-         {cartCount > 0 && (
+         {isAvailable && cartCount > 0 && (
             <>
                <button onClick={() => onRemove(item)} style={{background:'rgba(255,255,255,0.1)', color:'white', border:'none', width:'30px', height:'30px', borderRadius:'50%', cursor:'pointer'}}>-</button>
                <span style={{fontSize:'1rem', fontWeight:'bold'}}>{cartCount}</span>
             </>
          )}
-         <button onClick={() => onAdd(item)} className="btn-primary" style={{width:'35px', height:'35px', padding:0, borderRadius:'50%', fontSize:'1.2rem'}}>+</button>
+         <button
+          onClick={() => isAvailable && onAdd(item)}
+          className="btn-primary"
+          disabled={!isAvailable}
+          style={{
+            width:'35px',
+            height:'35px',
+            padding:0,
+            borderRadius:'50%',
+            fontSize:'1.2rem',
+            opacity: isAvailable ? 1 : 0.4,
+            cursor: isAvailable ? 'pointer' : 'not-allowed'
+          }}
+         >+
+         </button>
       </div>
     </div>
   );
