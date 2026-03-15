@@ -30,9 +30,13 @@ export default function App() {
     mood: 'Happy', hunger: 'Medium', category: 'Any', spice: 'Low', type: 'Both' 
   });
   const [adminCreds, setAdminCreds] = useState({ id: '', password: '' });
+  const [impactStats, setImpactStats] = useState({ total_charity: 0, total_orders: 0 });
+  const [recentImpactStats, setRecentImpactStats] = useState({ recent_window: 5, recent_orders_count: 0, charity_orders_count: 0, recent_charity_amount: 0, recent_social_impact_count: 0 });
 
   useEffect(() => {
     fetch(`${API_URL}/menu`).then(r => r.json()).then(setMenuItems).catch(console.error);
+    fetch(`${API_URL}/admin/stats`).then(r => r.json()).then(setImpactStats).catch(console.error);
+    fetch(`${API_URL}/impact/recent`).then(r => r.json()).then(setRecentImpactStats).catch(console.error);
   }, [view]); 
 
   const getDeviceStyle = () => {
@@ -110,6 +114,8 @@ export default function App() {
         setCart([]); 
         setIsCartOpen(false); 
         setView('track'); 
+    } else {
+        alert(data.error || 'Unable to place order right now.');
     }
   };
 
@@ -139,7 +145,7 @@ export default function App() {
       }
 
       <div style={getDeviceStyle()} className="device-screen">
-        {view === 'landing' && <LandingPage setView={setView} />}
+        {view === 'landing' && <LandingPage setView={setView} impactStats={impactStats} recentImpactStats={recentImpactStats} />} 
 
         {view === 'menu' && (
           <div className="animate-in" style={{ padding: '0 20px' }}>

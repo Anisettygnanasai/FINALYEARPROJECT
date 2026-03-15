@@ -36,6 +36,11 @@ def load_menu():
             df['rating'] = 4.0
         else:
             df['rating'] = pd.to_numeric(df['rating'], errors='coerce').fillna(4.0)
+
+        if 'is_available' not in df.columns:
+            df['is_available'] = True
+        else:
+            df['is_available'] = df['is_available'].astype(str).str.lower().isin(['true', '1', 'yes'])
         return df
     except Exception as e: 
         print(f"CSV LOAD ERROR: {e}")
@@ -126,6 +131,11 @@ def ai_recommend(age, mood, weather, restrictions=None, hunger=None, category=No
 
     df['score'] += df['rating']
 
+    # Keep unavailable items in the pool, but with very low chance.
+    # If at least a few available options exist, recommendation naturally favors them.
+    if 'is_available' in df.columns:
+        df.loc[~df['is_available'], 'score'] -= 40
+
     # VARIETY FIX: Pick top 12 matches, then sample 6 to avoid repetition
     top_pool = df.sort_values(by=['score', 'rating'], ascending=False).head(12)
     return top_pool.sample(n=min(len(top_pool), 6)).to_dict(orient='records')
@@ -201,13 +211,22 @@ def analyze_face():
 def place_order():
     data = request.json
     token = str(uuid.uuid4().int)[:6]
+    requested_items = data.get('items', [])
+
+    # Prevent accidental ordering of unavailable items.
+    unavailable_names = set()
+    if not isinstance(menu_df, list) and not menu_df.empty and 'is_available' in menu_df.columns:
+        unavailable_names = set(menu_df[~menu_df['is_available']]['name'].astype(str).tolist())
+
+    if any(item.get('name') in unavailable_names for item in requested_items):
+        return jsonify({"success": False, "error": "One or more selected items are currently unavailable."}), 400
     
     # CHARITY CALCULATION: Tracks impact for permanent ledger
-    charity_total = sum(5 for item in data.get('items', []) if "Social Impact" in item.get('description', ''))
+    charity_total = sum(5 for item in requested_items if "Social Impact" in item.get('description', ''))
     update_permanent_stats(charity_total)
     
     orders_db[token] = { 
-        "token": token, "table": data.get('table'), "items": data.get('items'), 
+        "token": token, "table": data.get('table'), "items": requested_items,
         "charity_earned": charity_total, "status": "Accepted", "timestamp": datetime.datetime.now().isoformat()
     }
     return jsonify({"success": True, "token": token, "charity_earned": charity_total})
@@ -218,6 +237,22 @@ def get_admin_stats():
     if os.path.exists(STATS_FILE):
         with open(STATS_FILE, 'r') as f: return jsonify(json.load(f))
     return jsonify({"total_charity": 0, "total_orders": 0})
+
+
+@app.route('/api/impact/recent', methods=['GET'])
+def get_recent_impact_stats():
+    """Recent social-impact snapshot to nudge customers toward charity choices."""
+    recent_orders = sorted(orders_db.values(), key=lambda o: o.get('timestamp', ''), reverse=True)[:5]
+    charity_orders = [o for o in recent_orders if o.get('charity_earned', 0) > 0]
+    charity_amount = int(sum(o.get('charity_earned', 0) for o in charity_orders))
+
+    return jsonify({
+        "recent_window": 5,
+        "recent_orders_count": len(recent_orders),
+        "charity_orders_count": len(charity_orders),
+        "recent_charity_amount": charity_amount,
+        "recent_social_impact_count": int(charity_amount // 20)
+    })
 
 @app.route('/api/order/status/<token>', methods=['GET'])
 def get_order_status(token):
@@ -260,7 +295,7 @@ def add_item():
         'category': data['category'], 'type': data['type'], 'calories': data.get('calories', 200),
         'description': data.get('description', ''), 'image_file': 'placeholder.jpg',
         'mood_tag': data.get('mood_tag', 'Happy'), 'weather_tag': data.get('weather_tag', 'Sunny'),
-        'age_group': data.get('age_group', 'All'), 'rating': 4.0
+        'age_group': data.get('age_group', 'All'), 'rating': 4.0, 'is_available': True
     }
     menu_df = pd.concat([menu_df, pd.DataFrame([new_row])], ignore_index=True)
     save_menu(menu_df)
@@ -270,6 +305,23 @@ def add_item():
 def delete_item():
     global menu_df
     menu_df = menu_df[menu_df['name'] != request.json.get('name')]
+    save_menu(menu_df)
+    return jsonify({"success": True})
+
+@app.route('/api/admin/menu/availability', methods=['POST'])
+def update_item_availability():
+    global menu_df
+    data = request.json
+    name = data.get('name')
+    is_available = data.get('is_available')
+
+    if name is None or is_available is None:
+        return jsonify({"success": False, "error": "name and is_available are required"}), 400
+
+    if name not in menu_df['name'].values:
+        return jsonify({"success": False, "error": "Item not found"}), 404
+
+    menu_df.loc[menu_df['name'] == name, 'is_available'] = bool(is_available)
     save_menu(menu_df)
     return jsonify({"success": True})
 
