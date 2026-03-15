@@ -4,7 +4,6 @@ import uuid
 import json
 import pandas as pd
 import numpy as np
-import cv2
 import base64
 import requests
 import random
@@ -15,6 +14,7 @@ app = Flask(__name__)
 CORS(app)
 
 CSV_FILE = 'menu_data.csv'
+CSV_SEED_FILE = 'menu_seed_data.csv'
 STATS_FILE = 'impact_stats.json'  # Permanent ledger for social impact
 WEATHER_API_KEY = "da92ba39e070d8db6566c5f55b2ff087"
 
@@ -22,22 +22,50 @@ WEATHER_API_KEY = "da92ba39e070d8db6566c5f55b2ff087"
 def load_menu():
     base_path = os.path.dirname(os.path.abspath(__file__))
     file_path = os.path.join(base_path, CSV_FILE)
-    if not os.path.exists(file_path): 
-        print("CSV NOT FOUND")
-        return []
+    seed_file_path = os.path.join(base_path, CSV_SEED_FILE)
+
+    source_path = file_path
+    if not os.path.exists(file_path):
+        if os.path.exists(seed_file_path):
+            source_path = seed_file_path
+            print(f"MENU CSV NOT FOUND, USING SEED DATA: {CSV_SEED_FILE}")
+        else:
+            print("MENU CSV NOT FOUND AND NO SEED AVAILABLE")
+            return []
+
     try:
-        df = pd.read_csv(file_path, on_bad_lines='skip')
+        df = pd.read_csv(source_path, on_bad_lines='skip')
+        if df.empty:
+            print("MENU CSV IS EMPTY")
+            return []
+
         df = df.fillna('')
+        required_defaults = {
+            'mood_tag': 'Neutral',
+            'weather_tag': 'Clear',
+            'age_group': 'All',
+            'category': 'Main Course',
+            'type': 'veg',
+            'description': '',
+            'price': 0,
+            'rating': 4.0,
+            'is_available': True,
+        }
+        for col, default in required_defaults.items():
+            if col not in df.columns:
+                df[col] = default
+
         df['mood_tag'] = df['mood_tag'].astype(str).str.strip()
         df['weather_tag'] = df['weather_tag'].astype(str).str.strip()
         df['age_group'] = df['age_group'].astype(str).str.strip()
         df['category'] = df['category'].astype(str).str.strip()
-        if 'rating' not in df.columns:
-            df['rating'] = 4.0
-        else:
-            df['rating'] = pd.to_numeric(df['rating'], errors='coerce').fillna(4.0)
+        df['type'] = df['type'].astype(str).str.strip().str.lower()
+        df['rating'] = pd.to_numeric(df['rating'], errors='coerce').fillna(4.0)
+        df['price'] = pd.to_numeric(df['price'], errors='coerce').fillna(0)
+        df['is_available'] = df['is_available'].astype(str).str.lower().isin(['true', '1', 'yes'])
+
         return df
-    except Exception as e: 
+    except Exception as e:
         print(f"CSV LOAD ERROR: {e}")
         return []
 
@@ -126,6 +154,11 @@ def ai_recommend(age, mood, weather, restrictions=None, hunger=None, category=No
 
     df['score'] += df['rating']
 
+    # Keep unavailable items in the pool, but with very low chance.
+    # If at least a few available options exist, recommendation naturally favors them.
+    if 'is_available' in df.columns:
+        df.loc[~df['is_available'], 'score'] -= 40
+
     # VARIETY FIX: Pick top 12 matches, then sample 6 to avoid repetition
     top_pool = df.sort_values(by=['score', 'rating'], ascending=False).head(12)
     return top_pool.sample(n=min(len(top_pool), 6)).to_dict(orient='records')
@@ -151,6 +184,7 @@ def manual_recommend():
 @app.route('/api/ai/analyze', methods=['POST'])
 def analyze_face():
     try:
+        import cv2
         from deepface import DeepFace
         data = request.json
         img_data = data['image'].split(',')[1]
@@ -195,19 +229,28 @@ def analyze_face():
     except Exception as e:
         # Detailed terminal logging for debugging
         print(f"AI SYSTEM LOG: {str(e)}") 
-        return jsonify({"status": "error", "recommendations": []})
+        return jsonify({"status": "error", "message": "AI face analysis unavailable on this deployment.", "recommendations": []})
 
 @app.route('/api/order/place', methods=['POST'])
 def place_order():
     data = request.json
     token = str(uuid.uuid4().int)[:6]
+    requested_items = data.get('items', [])
+
+    # Prevent accidental ordering of unavailable items.
+    unavailable_names = set()
+    if not isinstance(menu_df, list) and not menu_df.empty and 'is_available' in menu_df.columns:
+        unavailable_names = set(menu_df[~menu_df['is_available']]['name'].astype(str).tolist())
+
+    if any(item.get('name') in unavailable_names for item in requested_items):
+        return jsonify({"success": False, "error": "One or more selected items are currently unavailable."}), 400
     
     # CHARITY CALCULATION: Tracks impact for permanent ledger
-    charity_total = sum(5 for item in data.get('items', []) if "Social Impact" in item.get('description', ''))
+    charity_total = sum(5 for item in requested_items if "Social Impact" in item.get('description', ''))
     update_permanent_stats(charity_total)
     
     orders_db[token] = { 
-        "token": token, "table": data.get('table'), "items": data.get('items'), 
+        "token": token, "table": data.get('table'), "items": requested_items,
         "charity_earned": charity_total, "status": "Accepted", "timestamp": datetime.datetime.now().isoformat()
     }
     return jsonify({"success": True, "token": token, "charity_earned": charity_total})
@@ -218,6 +261,22 @@ def get_admin_stats():
     if os.path.exists(STATS_FILE):
         with open(STATS_FILE, 'r') as f: return jsonify(json.load(f))
     return jsonify({"total_charity": 0, "total_orders": 0})
+
+
+@app.route('/api/impact/recent', methods=['GET'])
+def get_recent_impact_stats():
+    """Recent social-impact snapshot to nudge customers toward charity choices."""
+    recent_orders = sorted(orders_db.values(), key=lambda o: o.get('timestamp', ''), reverse=True)[:5]
+    charity_orders = [o for o in recent_orders if o.get('charity_earned', 0) > 0]
+    charity_amount = int(sum(o.get('charity_earned', 0) for o in charity_orders))
+
+    return jsonify({
+        "recent_window": 5,
+        "recent_orders_count": len(recent_orders),
+        "charity_orders_count": len(charity_orders),
+        "recent_charity_amount": charity_amount,
+        "recent_social_impact_count": int(charity_amount // 20)
+    })
 
 @app.route('/api/order/status/<token>', methods=['GET'])
 def get_order_status(token):
@@ -260,7 +319,7 @@ def add_item():
         'category': data['category'], 'type': data['type'], 'calories': data.get('calories', 200),
         'description': data.get('description', ''), 'image_file': 'placeholder.jpg',
         'mood_tag': data.get('mood_tag', 'Happy'), 'weather_tag': data.get('weather_tag', 'Sunny'),
-        'age_group': data.get('age_group', 'All'), 'rating': 4.0
+        'age_group': data.get('age_group', 'All'), 'rating': 4.0, 'is_available': True
     }
     menu_df = pd.concat([menu_df, pd.DataFrame([new_row])], ignore_index=True)
     save_menu(menu_df)
@@ -270,6 +329,23 @@ def add_item():
 def delete_item():
     global menu_df
     menu_df = menu_df[menu_df['name'] != request.json.get('name')]
+    save_menu(menu_df)
+    return jsonify({"success": True})
+
+@app.route('/api/admin/menu/availability', methods=['POST'])
+def update_item_availability():
+    global menu_df
+    data = request.json
+    name = data.get('name')
+    is_available = data.get('is_available')
+
+    if name is None or is_available is None:
+        return jsonify({"success": False, "error": "name and is_available are required"}), 400
+
+    if name not in menu_df['name'].values:
+        return jsonify({"success": False, "error": "Item not found"}), 404
+
+    menu_df.loc[menu_df['name'] == name, 'is_available'] = bool(is_available)
     save_menu(menu_df)
     return jsonify({"success": True})
 

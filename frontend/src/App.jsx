@@ -7,7 +7,15 @@ import CartDrawer from './components/CartDrawer';
 import AdminDashboard from './components/AdminDashboard';
 import { QrCode, ArrowLeft, Star } from 'lucide-react';
 
-const API_URL = "http://localhost:5000/api";
+const resolveApiBase = () => {
+  const rawBase = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').trim();
+  const withoutTrailingSlash = rawBase.replace(/\/+$/, '');
+  return /\/api$/i.test(withoutTrailingSlash)
+    ? withoutTrailingSlash
+    : `${withoutTrailingSlash}/api`;
+};
+
+const API_URL = resolveApiBase();
 
 export default function App() {
   const [view, setView] = useState('landing');
@@ -30,9 +38,27 @@ export default function App() {
     mood: 'Happy', hunger: 'Medium', category: 'Any', spice: 'Low', type: 'Both' 
   });
   const [adminCreds, setAdminCreds] = useState({ id: '', password: '' });
+  const [impactStats, setImpactStats] = useState({ total_charity: 0, total_orders: 0 });
+  const [recentImpactStats, setRecentImpactStats] = useState({ recent_window: 5, recent_orders_count: 0, charity_orders_count: 0, recent_charity_amount: 0, recent_social_impact_count: 0 });
+  const [menuLoadError, setMenuLoadError] = useState('');
 
   useEffect(() => {
-    fetch(`${API_URL}/menu`).then(r => r.json()).then(setMenuItems).catch(console.error);
+    fetch(`${API_URL}/menu`)
+      .then(r => {
+        if (!r.ok) throw new Error(`Menu API failed (${r.status})`);
+        return r.json();
+      })
+      .then(data => {
+        setMenuItems(Array.isArray(data) ? data : []);
+        setMenuLoadError('');
+      })
+      .catch((error) => {
+        console.error(error);
+        setMenuItems([]);
+        setMenuLoadError(`Could not load menu. Check VITE_API_URL (current: ${API_URL}).`);
+      });
+    fetch(`${API_URL}/admin/stats`).then(r => r.json()).then(setImpactStats).catch(console.error);
+    fetch(`${API_URL}/impact/recent`).then(r => r.json()).then(setRecentImpactStats).catch(console.error);
   }, [view]); 
 
   const getDeviceStyle = () => {
@@ -110,6 +136,8 @@ export default function App() {
         setCart([]); 
         setIsCartOpen(false); 
         setView('track'); 
+    } else {
+        alert(data.error || 'Unable to place order right now.');
     }
   };
 
@@ -139,7 +167,7 @@ export default function App() {
       }
 
       <div style={getDeviceStyle()} className="device-screen">
-        {view === 'landing' && <LandingPage setView={setView} />}
+        {view === 'landing' && <LandingPage setView={setView} impactStats={impactStats} recentImpactStats={recentImpactStats} />} 
 
         {view === 'menu' && (
           <div className="animate-in" style={{ padding: '0 20px' }}>
@@ -152,6 +180,16 @@ export default function App() {
               </div>
             </div>
             <div className="masonry-container">
+              {menuLoadError && (
+                <div className="glass-panel" style={{ padding: '20px', marginBottom: '20px', color: '#ff6b81' }}>
+                  {menuLoadError}
+                </div>
+              )}
+              {!menuLoadError && Object.keys(getGroupedMenu()).length === 0 && (
+                <div className="glass-panel" style={{ padding: '20px', marginBottom: '20px', color: '#ccc' }}>
+                  No menu items found yet.
+                </div>
+              )}
               {Object.entries(getGroupedMenu()).map(([cat, items]) => (
                 <div key={cat} className="glass-panel masonry-item" style={{ marginBottom: '20px', padding: '20px' }}>
                   <h2 style={{ margin: '0 0 15px 0', color: 'var(--primary-glow)', textTransform: 'uppercase', borderBottom: '1px solid #444', paddingBottom: '5px', fontSize: '1.2rem' }}>{cat}</h2>
