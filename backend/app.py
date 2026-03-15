@@ -14,6 +14,7 @@ app = Flask(__name__)
 CORS(app)
 
 CSV_FILE = 'menu_data.csv'
+CSV_SEED_FILE = 'menu_seed_data.csv'
 STATS_FILE = 'impact_stats.json'  # Permanent ledger for social impact
 WEATHER_API_KEY = "da92ba39e070d8db6566c5f55b2ff087"
 
@@ -21,16 +22,48 @@ WEATHER_API_KEY = "da92ba39e070d8db6566c5f55b2ff087"
 def load_menu():
     base_path = os.path.dirname(os.path.abspath(__file__))
     file_path = os.path.join(base_path, CSV_FILE)
-    if not os.path.exists(file_path): 
-        print("CSV NOT FOUND")
-        return []
+    seed_file_path = os.path.join(base_path, CSV_SEED_FILE)
+
+    source_path = file_path
+    if not os.path.exists(file_path):
+        if os.path.exists(seed_file_path):
+            source_path = seed_file_path
+            print(f"MENU CSV NOT FOUND, USING SEED DATA: {CSV_SEED_FILE}")
+        else:
+            print("MENU CSV NOT FOUND AND NO SEED AVAILABLE")
+            return []
+
     try:
-        df = pd.read_csv(file_path, on_bad_lines='skip')
+        df = pd.read_csv(source_path, on_bad_lines='skip')
+        if df.empty:
+            print("MENU CSV IS EMPTY")
+            return []
+
         df = df.fillna('')
+        required_defaults = {
+            'mood_tag': 'Neutral',
+            'weather_tag': 'Clear',
+            'age_group': 'All',
+            'category': 'Main Course',
+            'type': 'veg',
+            'description': '',
+            'price': 0,
+            'rating': 4.0,
+            'is_available': True,
+        }
+        for col, default in required_defaults.items():
+            if col not in df.columns:
+                df[col] = default
+
         df['mood_tag'] = df['mood_tag'].astype(str).str.strip()
         df['weather_tag'] = df['weather_tag'].astype(str).str.strip()
         df['age_group'] = df['age_group'].astype(str).str.strip()
         df['category'] = df['category'].astype(str).str.strip()
+        df['type'] = df['type'].astype(str).str.strip().str.lower()
+        df['rating'] = pd.to_numeric(df['rating'], errors='coerce').fillna(4.0)
+        df['price'] = pd.to_numeric(df['price'], errors='coerce').fillna(0)
+        df['is_available'] = df['is_available'].astype(str).str.lower().isin(['true', '1', 'yes'])
+
         if 'rating' not in df.columns:
             df['rating'] = 4.0
         else:
@@ -41,7 +74,7 @@ def load_menu():
         else:
             df['is_available'] = df['is_available'].astype(str).str.lower().isin(['true', '1', 'yes'])
         return df
-    except Exception as e: 
+    except Exception as e:
         print(f"CSV LOAD ERROR: {e}")
         return []
 
