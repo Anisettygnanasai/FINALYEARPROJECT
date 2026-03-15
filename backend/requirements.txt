@@ -2,8 +2,5 @@ flask
 flask-cors
 pandas
 numpy
-opencv-python
-deepface
-tf-keras
 requests
 gunicorn
